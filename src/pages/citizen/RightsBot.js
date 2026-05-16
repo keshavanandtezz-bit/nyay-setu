@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import Navbar from '../../components/Navbar';
-import { aiAPI } from '../../services/api';
 
 const TEAL = '#1d9e75';
 const G = '#08120f';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 const SUGGESTED = [
   "What are my rights if I am arrested?",
@@ -44,19 +44,30 @@ export default function RightsBot() {
         content: m.text
       }));
 
-      const data = await aiAPI.rightsBot([
-        ...history,
-        { role: 'user', content: userMsg }
-      ]);
+      // Always route through backend — never call Groq directly from frontend
+      const response = await fetch(`${API_URL}/ai/rights-bot`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...history, { role: 'user', content: userMsg }]
+        })
+      });
 
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(`Error ${response.status} - ${errData.detail || 'Server error'}`);
+      }
+
+      const data = await response.json();
       setMessages(prev => [...prev, {
         role: 'assistant',
         text: data.reply || "I'm sorry, I could not process that. Please try again."
       }]);
+
     } catch (err) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        text: `I'm having trouble connecting right now. ${err.message}\n\nFor urgent legal help, call the free helpline: 15100`
+        text: `I'm having trouble connecting right now.\n\n${err.message}\n\nFor urgent legal help, call the free helpline: 15100`
       }]);
     }
     setLoading(false);
@@ -80,8 +91,9 @@ export default function RightsBot() {
         </p>
       </div>
 
-      <div style={{ padding: '0.8rem 2.5rem', maxWidth: 780,
-        width: '100%', margin: '0 auto' }}>
+      {/* Suggested Questions */}
+      <div style={{ padding: '0.8rem 2.5rem',
+        maxWidth: 780, width: '100%', margin: '0 auto' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
           {SUGGESTED.map((s, i) => (
             <button key={i} onClick={() => sendMessage(s)}
@@ -105,6 +117,7 @@ export default function RightsBot() {
         </div>
       </div>
 
+      {/* Chat Messages */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 2.5rem',
         maxWidth: 780, width: '100%', margin: '0 auto' }}>
         {messages.map((m, i) => (
@@ -116,7 +129,8 @@ export default function RightsBot() {
                 background: 'rgba(29,158,117,0.15)',
                 border: '1px solid rgba(29,158,117,0.3)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.9rem', marginRight: 10, flexShrink: 0, marginTop: 2 }}>⚖️</div>
+                fontSize: '0.9rem', marginRight: 10,
+                flexShrink: 0, marginTop: 2 }}>⚖️</div>
             )}
             <div style={{
               maxWidth: '75%',
@@ -135,8 +149,10 @@ export default function RightsBot() {
           </div>
         ))}
 
+        {/* Loading dots */}
         {loading && (
-          <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start',
+            marginBottom: '1rem' }}>
             <div style={{ width: 32, height: 32, borderRadius: '50%',
               background: 'rgba(29,158,117,0.15)',
               border: '1px solid rgba(29,158,117,0.3)',
@@ -158,10 +174,10 @@ export default function RightsBot() {
         <div ref={bottomRef} />
       </div>
 
+      {/* Input */}
       <div style={{ padding: '1rem 2.5rem 1.5rem',
         maxWidth: 780, width: '100%', margin: '0 auto' }}>
-        <div style={{ display: 'flex', gap: 0,
-          background: 'rgba(29,158,117,0.06)',
+        <div style={{ display: 'flex', background: 'rgba(29,158,117,0.06)',
           border: '1px solid rgba(29,158,117,0.22)',
           borderRadius: 12, overflow: 'hidden' }}>
           <input
@@ -171,8 +187,9 @@ export default function RightsBot() {
             placeholder="Ask about your legal rights..."
             disabled={loading}
             style={{ flex: 1, background: 'transparent', border: 'none',
-              outline: 'none', padding: '0.9rem 1.2rem', fontSize: '0.9rem',
-              color: '#d8ede6', fontFamily: "'Outfit',sans-serif" }}
+              outline: 'none', padding: '0.9rem 1.2rem',
+              fontSize: '0.9rem', color: '#d8ede6',
+              fontFamily: "'Outfit',sans-serif" }}
           />
           <button onClick={() => sendMessage()}
             disabled={loading || !input.trim()}
@@ -180,13 +197,14 @@ export default function RightsBot() {
               background: loading ? 'rgba(29,158,117,0.3)' : TEAL,
               border: 'none', color: 'white',
               fontFamily: "'Outfit',sans-serif", fontSize: '0.85rem',
-              fontWeight: 500, cursor: loading ? 'not-allowed' : 'pointer' }}>
+              fontWeight: 500,
+              cursor: loading ? 'not-allowed' : 'pointer' }}>
             {loading ? '...' : 'Ask →'}
           </button>
         </div>
         <div style={{ fontSize: '0.7rem', color: 'rgba(216,237,230,0.2)',
           marginTop: '0.5rem', textAlign: 'center' }}>
-          This is general legal information only. For personal legal advice, consult a lawyer.
+          General legal information only. For personal advice consult a lawyer.
           Free legal aid: 15100
         </div>
       </div>
