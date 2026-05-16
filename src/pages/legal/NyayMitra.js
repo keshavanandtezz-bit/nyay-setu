@@ -32,7 +32,7 @@ PRESIDING JUDGE: Hon. Justice K. Ramakrishna, Sessions Judge, Bengaluru Urban Di
 export default function NyayMitra() {
   const [stage, setStage] = useState('upload');
   const [extracting, setExtracting] = useState(false);
-  const [analyzing, setAnalyzing] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false); // eslint-disable-line no-unused-vars
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [fileName, setFileName] = useState('');
