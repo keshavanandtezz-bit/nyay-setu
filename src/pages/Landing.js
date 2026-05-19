@@ -64,8 +64,9 @@ export default function Landing() {
         </div>
 
         <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '3.8rem',
-          fontWeight: 700, textAlign: 'center', lineHeight: 1.1, marginBottom: '0.8rem' }}>
-          Where <span style={{ color: '#d4a843', fontStyle: 'italic' }}>Justice</span> meets
+          fontWeight: 700, textAlign: 'center', lineHeight: 1.1, marginBottom: '0.8rem',
+          color: '#d4a843' }}>
+          Where <span style={{ fontStyle: 'italic' }}>Justice</span> meets
           <br />Intelligence
         </h1>
 
