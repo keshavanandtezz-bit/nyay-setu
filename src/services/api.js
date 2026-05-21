@@ -3,6 +3,16 @@ const GROQ_KEY = process.env.REACT_APP_GROQ_API_KEY || '';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MODEL = 'llama-3.3-70b-versatile';
 
+// ── Test if backend is reachable ─────────────────────────────────────
+async function isBackendAlive() {
+  try {
+    const res = await fetch(`${BASE_URL}/health`, { signal: AbortSignal.timeout(5000) });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 // ── Generic backend request ──────────────────────────────────────────
 async function request(path, options = {}) {
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -16,9 +26,15 @@ async function request(path, options = {}) {
   return res.json();
 }
 
-// ── Direct Groq call (fallback when backend is down) ────────────────
+// ── Direct Groq call ─────────────────────────────────────────────────
 async function callGroqDirect(messages, systemPrompt = '') {
-  if (!GROQ_KEY) throw new Error('No Groq API key configured in frontend .env');
+  if (!GROQ_KEY || GROQ_KEY === 'your_groq_api_key_here') {
+    throw new Error('Groq API key not configured. Add REACT_APP_GROQ_API_KEY to Vercel environment variables.');
+  }
+
+  const allMessages = systemPrompt
+    ? [{ role: 'system', content: systemPrompt }, ...messages]
+    : messages;
 
   const response = await fetch(GROQ_URL, {
     method: 'POST',
@@ -29,15 +45,14 @@ async function callGroqDirect(messages, systemPrompt = '') {
     body: JSON.stringify({
       model: MODEL,
       max_tokens: 1000,
-      messages: systemPrompt
-        ? [{ role: 'system', content: systemPrompt }, ...messages]
-        : messages,
+      temperature: 0.7,
+      messages: allMessages,
     }),
   });
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `Groq error: ${response.status}`);
+    throw new Error(err.error?.message || `Groq error ${response.status}`);
   }
 
   const data = await response.json();
@@ -66,36 +81,39 @@ export const legalAPI = {
     return request(`/legal/undertrials${qs ? '?' + qs : ''}`);
   },
 
-  getUndertrial: (id) =>
-    request(`/legal/undertrial/${id}`),
-
-  getDistricts: () =>
-    request('/legal/districts'),
-
-  getStats: () =>
-    request('/legal/stats'),
+  getUndertrial: (id) => request(`/legal/undertrial/${id}`),
+  getDistricts: () => request('/legal/districts'),
+  getStats: () => request('/legal/stats'),
 };
 
-// ── AI API — backend first, Groq direct fallback ─────────────────────
+// ── AI API ───────────────────────────────────────────────────────────
 export const aiAPI = {
 
+  // ── RightsBot ──────────────────────────────────────────────────────
   rightsBot: async (messages) => {
     // Try backend first
-    try {
-      const data = await request('/ai/rights-bot', {
-        method: 'POST',
-        body: JSON.stringify({ messages }),
-      });
-      if (data.reply) return data;
-    } catch (e) {
-      console.warn('Backend unavailable for rightsBot, using direct Groq:', e.message);
+    const backendAlive = await isBackendAlive();
+
+    if (backendAlive) {
+      try {
+        const data = await request('/ai/rights-bot', {
+          method: 'POST',
+          body: JSON.stringify({ messages }),
+        });
+        if (data.reply) return data;
+      } catch (e) {
+        console.warn('Backend AI failed, using direct Groq:', e.message);
+      }
+    } else {
+      console.warn('Backend offline, using direct Groq for RightsBot');
     }
 
-    // Fallback — call Groq directly
-    const reply = await callGroqDirect(messages,
+    // Direct Groq fallback
+    const reply = await callGroqDirect(
+      messages,
       `You are Nyay Sahayak, a compassionate legal rights assistant for Indian citizens.
-Explain Indian laws and rights in simple plain English.
-Never give specific legal advice — always suggest consulting a lawyer.
+Explain Indian laws and rights in simple plain English. Never give specific legal advice.
+Always suggest consulting a lawyer for personal situations.
 Keep answers under 200 words. Use bullet points for lists.
 When relevant mention free legal aid helpline: 15100.
 Focus on: IPC, CrPC, bail rights, undertrial rights, FIR procedures, legal aid, domestic violence.`
@@ -103,11 +121,11 @@ Focus on: IPC, CrPC, bail rights, undertrial rights, FIR procedures, legal aid, 
     return { reply };
   },
 
+  // ── Analyze PDF ────────────────────────────────────────────────────
   analyzePDF: async (file) => {
-    // PDF analysis always needs backend (file upload)
+    const formData = new FormData();
+    formData.append('file', file);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
       const res = await fetch(`${BASE_URL}/ai/analyze-case`, {
         method: 'POST',
         body: formData,
@@ -115,42 +133,46 @@ Focus on: IPC, CrPC, bail rights, undertrial rights, FIR procedures, legal aid, 
       if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
       return res.json();
     } catch (e) {
-      throw new Error('PDF upload requires backend. Make sure Render is running.');
+      throw new Error('PDF upload requires backend. Make sure Render is running: ' + e.message);
     }
   },
 
+  // ── Analyze Text (Sample Case) ─────────────────────────────────────
   analyzeText: async (text) => {
-    // Try backend first
-    try {
-      const data = await request('/ai/analyze-text', {
-        method: 'POST',
-        body: JSON.stringify({ text }),
-      });
-      if (data.success) return data;
-    } catch (e) {
-      console.warn('Backend unavailable for analyzeText, using direct Groq:', e.message);
+    const backendAlive = await isBackendAlive();
+
+    if (backendAlive) {
+      try {
+        const data = await request('/ai/analyze-text', {
+          method: 'POST',
+          body: JSON.stringify({ text }),
+        });
+        if (data.success) return data;
+      } catch (e) {
+        console.warn('Backend analyzeText failed, using direct Groq:', e.message);
+      }
     }
 
-    // Fallback — call Groq directly
+    // Direct Groq fallback
     const words = text.split(/\s+/).slice(0, 3500).join(' ');
     const reply = await callGroqDirect(
-      [{ role: 'user', content: `Analyze this Indian court document and return ONLY valid JSON:\n\n${words}` }],
+      [{ role: 'user', content: `Analyze this Indian court document and return ONLY valid JSON with no extra text:\n\n${words}` }],
       `You are Nyay Mitra, an AI legal assistant for Indian courts.
-Analyze the case document and return ONLY valid JSON with no extra text, no markdown, no backticks.
+Return ONLY valid JSON, no markdown, no backticks, no extra text.
 Use this exact structure:
 {
-  "case_title": "State vs. Accused Name",
-  "case_number": "Full case number",
-  "court": "Name of court",
-  "judge": "Judge name or Unknown",
-  "accused": ["Name 1"],
-  "charges": ["Charge 1"],
+  "case_title": "State vs. Name",
+  "case_number": "case number",
+  "court": "court name",
+  "judge": "judge name or Unknown",
+  "accused": ["name1"],
+  "charges": ["charge1"],
   "ipc_sections": ["IPC 420"],
-  "bail_status": "Denied / Granted / Not Applied",
-  "current_status": "Current stage of trial",
-  "key_facts": ["Fact 1", "Fact 2", "Fact 3"],
+  "bail_status": "Denied or Granted or Not Applied",
+  "current_status": "current stage",
+  "key_facts": ["fact1", "fact2", "fact3"],
   "important_dates": [{"event": "FIR Filed", "date": "DD.MM.YYYY"}],
-  "summary": "3 sentence plain English summary.",
+  "summary": "3 sentence summary in plain English",
   "next_hearing": "DD.MM.YYYY or Unknown",
   "witnesses_total": 0,
   "witnesses_examined": 0
@@ -166,26 +188,30 @@ Use this exact structure:
     }
   },
 
+  // ── Generate Bail Application ──────────────────────────────────────
   generateBail: async (payload) => {
-    // Try backend first
-    try {
-      const data = await request('/ai/generate-bail', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
-      if (data.success) return data;
-    } catch (e) {
-      console.warn('Backend unavailable for generateBail, using direct Groq:', e.message);
+    const backendAlive = await isBackendAlive();
+
+    if (backendAlive) {
+      try {
+        const data = await request('/ai/generate-bail', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+        if (data.success) return data;
+      } catch (e) {
+        console.warn('Backend generateBail failed, using direct Groq:', e.message);
+      }
     }
 
-    // Fallback — call Groq directly
+    // Direct Groq fallback
     const today = new Date().toLocaleDateString('en-IN',
       { day: 'numeric', month: 'long', year: 'numeric' });
 
     const application = await callGroqDirect(
       [{
         role: 'user',
-        content: `Generate a complete formal bail application for Indian court:
+        content: `Generate a complete formal bail application for Indian court.
 
 Name: ${payload.prisoner_name}
 Age: ${payload.age} years
@@ -201,10 +227,11 @@ Current Status: ${payload.case_status}
 Legal Representation: ${payload.lawyer}
 Today's Date: ${today}
 
-Generate a complete bail application with court header, grounds for bail emphasizing 
-${payload.days_in_custody} days custody, Article 21 personal liberty, prayer clause, and verification.`
+Write a complete bail application with proper court header, grounds for bail 
+emphasizing ${payload.days_in_custody} days in custody and Article 21 rights, 
+prayer clause, and verification.`
       }],
-      `You are an expert Indian criminal lawyer. Generate formal professional bail applications 
+      `You are an expert Indian criminal lawyer. Write formal bail applications 
 for Indian courts using proper legal language and CrPC Section 437/439 structure.`
     );
 
