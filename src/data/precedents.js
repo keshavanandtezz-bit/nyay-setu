@@ -109,6 +109,9 @@ export function searchPrecedents(query, ipcSection) {
   const q = query.toLowerCase().trim();
   const ipc = ipcSection.toLowerCase().trim();
 
+  // If neither filter is set, return nothing (don't dump all results)
+  if (!q && !ipc) return [];
+
   return precedents.filter(p => {
     const matchesQuery = !q ||
       p.title.toLowerCase().includes(q) ||
@@ -120,6 +123,7 @@ export function searchPrecedents(query, ipcSection) {
       p.ipc_sections.some(s => s.toLowerCase().includes(ipc)) ||
       p.keywords.some(k => k.toLowerCase().includes(ipc));
 
-    return matchesQuery || matchesIPC;
+    // AND logic: both conditions must be satisfied when both are provided
+    return matchesQuery && matchesIPC;
   });
 }

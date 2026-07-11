@@ -1,34 +1,48 @@
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
 import PageWrapper from '../../components/PageWrapper';
 
 export default function CitizenHome() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const searchRef = useRef(null);
+  
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
 
   const features = [
-    { icon: '👤', title: 'Prisoner Status', tag: 'Search by name or ID →',
-      desc: 'Find where your family member is held, next hearing date, lawyer details.',
+    { icon: '⚖️', title: t('citizen.nyayYatra'), tag: t('citizen.nyayYatraTag'),
+      desc: t('citizen.nyayYatraDesc'),
+      route: '/citizen/nyay-yatra' },
+    { icon: '👤', title: t('citizen.prisonerStatus'), tag: t('citizen.prisonerStatusTag'),
+      desc: t('citizen.prisonerStatusDesc'),
       route: '/citizen/status' },
-    { icon: '🤖', title: 'Know Your Rights', tag: 'Ask the AI →',
-      desc: 'Ask any legal question in plain English or Hindi. AI explains without jargon.',
+    { icon: '🤖', title: t('citizen.knowYourRights'), tag: t('citizen.knowYourRightsTag'),
+      desc: t('citizen.knowYourRightsDesc'),
       route: '/citizen/rights' },
-    { icon: '🗓️', title: 'Court Calendar', tag: 'Check dates →',
-      desc: 'View all upcoming hearing dates. Subscribe to SMS alerts so you never miss one.',
+    { icon: '🗓️', title: t('citizen.courtCalendar'), tag: t('citizen.courtCalendarTag'),
+      desc: t('citizen.courtCalendarDesc'),
       route: '/citizen/calendar' },
-    { icon: '🧑‍⚖️', title: 'Find Free Legal Aid', tag: 'Find near me →',
-      desc: 'Locate the nearest DLSA and free lawyers available in your district.',
+    { icon: '🧑‍⚖️', title: t('citizen.freeLegalAid'), tag: t('citizen.freeLegalAidTag'),
+      desc: t('citizen.freeLegalAidDesc'),
       route: '/citizen/legal-aid' },
-    { icon: '📋', title: 'File a Complaint', tag: 'Step by step guide →',
-      desc: 'Understand how to file an FIR and what to do if police refuses.',
+    { icon: '📋', title: t('citizen.fileComplaint'), tag: t('citizen.fileComplaintTag'),
+      desc: t('citizen.fileComplaintDesc'),
       route: '/citizen/rights' },
-    { icon: '🔔', title: 'SMS Alerts', tag: 'Subscribe →',
-      desc: 'Subscribe your phone to receive automatic alerts for hearing date changes.',
+    { icon: '🔔', title: t('citizen.smsAlerts'), tag: t('citizen.smsAlertsTag'),
+      desc: t('citizen.smsAlertsDesc'),
       route: '/citizen/calendar' },
   ];
 
   function handleSearch(e) {
     if (e.key === 'Enter' || e.type === 'click') {
-      const val = document.getElementById('main-search').value.trim();
+      const val = searchRef.current?.value?.trim();
       if (val) navigate(`/citizen/status?q=${encodeURIComponent(val)}`);
     }
   }
@@ -38,43 +52,51 @@ export default function CitizenHome() {
       <Navbar theme="green" showBack={true} />
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        margin: '1rem 2.5rem', padding: '0.9rem 1.4rem',
+        margin: isMobile ? '1rem' : '1rem 2.5rem', padding: '0.9rem 1.4rem',
         background: 'rgba(162,29,29,0.08)', border: '1px solid rgba(162,29,29,0.2)',
-        borderRadius: 10 }}>
+        borderRadius: 10, animation: 'fadeInScale 0.5s ease-out',
+        boxShadow: '0 0 15px rgba(162,29,29,0.1)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#e24b4a',
             animation: 'cpulse 1.5s infinite' }} />
-          <span style={{ fontSize: '0.82rem', color: 'rgba(216,237,230,0.6)' }}>
-            <strong style={{ color: '#f09595' }}>Emergency?</strong>
-            {' '}Call 112 · Legal Aid: 15100 · Women Helpline: 1091
+          <span style={{ fontSize: isMobile ? '0.7rem' : '0.82rem', color: 'rgba(216,237,230,0.6)' }}>
+            <strong style={{ color: '#f09595' }}>{t('citizen.emergency')}</strong>
+            {' '}{t('citizen.emergencyNumbers')}
           </span>
         </div>
         <button style={{ fontSize: '0.75rem', padding: '5px 14px',
           background: 'rgba(162,29,29,0.15)', border: '1px solid rgba(162,29,29,0.3)',
-          borderRadius: 6, color: '#f09595', cursor: 'pointer' }}>Quick Dial →</button>
+          borderRadius: 6, color: '#f09595', cursor: 'pointer', transition: 'all 0.2s' }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(162,29,29,0.25)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'rgba(162,29,29,0.15)'}>
+          {t('citizen.quickDial')}
+        </button>
       </div>
 
-      <div style={{ padding: '1.5rem 2.5rem 1rem', maxWidth: 1000, margin: '0 auto' }}>
+      <div className="reveal-on-scroll" style={{ padding: isMobile ? '1rem 1.5rem' : '1.5rem 2.5rem 1rem', maxWidth: 1000, margin: '0 auto' }}>
         <div style={{ fontSize: '0.75rem', letterSpacing: 2, textTransform: 'uppercase',
-          color: '#1d9e75', marginBottom: '0.5rem' }}>Welcome · नमस्ते</div>
-        <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '2.6rem',
-          fontWeight: 700, color: '#d8ede6', lineHeight: 1.15, marginBottom: '0.5rem' }}>
-          How can we help<br />you today?
+          color: '#1d9e75', marginBottom: '0.5rem' }}>{t('citizen.welcome')}</div>
+        <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: isMobile ? '2rem' : '2.6rem',
+          fontWeight: 700, color: '#d8ede6', lineHeight: 1.15, marginBottom: '0.5rem',
+          background: 'linear-gradient(90deg, #d8ede6, #1d9e75)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          {t('citizen.howCanWeHelp')}
         </h1>
-        <p style={{ fontSize: '0.9rem', color: 'rgba(216,237,230,0.45)', fontWeight: 300,
+        <p style={{ fontSize: '0.9rem', color: 'rgba(216,237,230,0.5)', fontWeight: 300,
           maxWidth: 450, lineHeight: 1.6 }}>
-          Search for any case, find your loved one's hearing date, or understand your
-          legal rights — no login required.
+          {t('citizen.searchDesc')}
         </p>
       </div>
 
-      <div style={{ padding: '0 2.5rem 1.5rem', maxWidth: 1000, margin: '0 auto' }}>
+      <div className="reveal-on-scroll" style={{ padding: isMobile ? '0 1.5rem 1rem' : '0 2.5rem 1.5rem', maxWidth: 1000, margin: '0 auto' }}>
         <div style={{ fontSize: '0.75rem', letterSpacing: '1.5px', textTransform: 'uppercase',
-          color: 'rgba(29,158,117,0.7)', marginBottom: '0.8rem' }}>Track a case or prisoner</div>
+          color: 'rgba(29,158,117,0.7)', marginBottom: '0.8rem' }}>{t('citizen.trackCase')}</div>
         <div style={{ display: 'flex', background: 'rgba(29,158,117,0.06)',
-          border: '1px solid rgba(29,158,117,0.2)', borderRadius: 10, overflow: 'hidden' }}>
-          <input id="main-search" type="text" onKeyDown={handleSearch}
-            placeholder="Enter Prisoner ID, Case Number, or Name (e.g. KA/BLR/2024/001)"
+          border: '1px solid rgba(29,158,117,0.2)', borderRadius: 10, overflow: 'hidden',
+          transition: 'box-shadow 0.3s' }}
+          onFocus={e => e.currentTarget.style.boxShadow = '0 0 15px rgba(29,158,117,0.3)'}
+          onBlur={e => e.currentTarget.style.boxShadow = 'none'}>
+          <input ref={searchRef} type="text" onKeyDown={handleSearch}
+            placeholder={t('citizen.searchPlaceholder')}
             style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none',
               padding: '0.9rem 1.2rem', fontSize: '0.9rem', color: '#d8ede6',
               fontFamily: "'Outfit',sans-serif" }}
@@ -82,38 +104,59 @@ export default function CitizenHome() {
           <button onClick={handleSearch}
             style={{ padding: '0.9rem 1.8rem', background: '#1d9e75', border: 'none',
               color: 'white', fontFamily: "'Outfit',sans-serif", fontSize: '0.85rem',
-              fontWeight: 500, cursor: 'pointer' }}>Search</button>
+              fontWeight: 500, cursor: 'pointer', transition: 'background 0.2s' }}
+            onMouseEnter={e => e.currentTarget.style.background = '#2ed89c'}
+            onMouseLeave={e => e.currentTarget.style.background = '#1d9e75'}>
+            {t('common.search')}
+          </button>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1rem',
-        padding: '0 2.5rem 2.5rem', maxWidth: 1000, margin: '0 auto' }}>
+      <div className="stagger-children" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap: '1rem',
+        padding: isMobile ? '0 1.5rem 2.5rem' : '0 2.5rem 2.5rem', maxWidth: 1000, margin: '0 auto' }}>
         {features.map((f, i) => (
-          <div key={i} onClick={() => navigate(f.route)}
-            style={{ background: 'rgba(29,158,117,0.05)',
-              border: '1px solid rgba(29,158,117,0.12)', borderRadius: 12,
-              padding: '1.4rem', cursor: 'pointer', transition: 'all 0.25s' }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = 'rgba(29,158,117,0.1)';
-              e.currentTarget.style.borderColor = 'rgba(29,158,117,0.25)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'rgba(29,158,117,0.05)';
-              e.currentTarget.style.borderColor = 'rgba(29,158,117,0.12)';
-              e.currentTarget.style.transform = 'none';
-            }}>
-            <div style={{ fontSize: '1.4rem', marginBottom: '0.8rem' }}>{f.icon}</div>
-            <div style={{ fontSize: '0.9rem', fontWeight: 500, color: '#d8ede6',
-              marginBottom: '0.3rem' }}>{f.title}</div>
-            <div style={{ fontSize: '0.78rem', color: 'rgba(216,237,230,0.4)',
-              lineHeight: 1.5, marginBottom: '0.8rem' }}>{f.desc}</div>
-            <div style={{ fontSize: '0.65rem', letterSpacing: 1, textTransform: 'uppercase',
-              color: '#1d9e75', opacity: 0.7 }}>{f.tag}</div>
-          </div>
+          <FeatureCard key={i} f={f} onClick={() => navigate(f.route)} />
         ))}
       </div>
       <style>{`@keyframes cpulse{0%,100%{opacity:1}50%{opacity:0.4}}`}</style>
     </PageWrapper>
+  );
+}
+
+function FeatureCard({ f, onClick }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div onClick={onClick}
+      className="glass-card"
+      style={{ background: 'rgba(29,158,117,0.05)',
+        border: '1px solid rgba(29,158,117,0.12)', borderRadius: 12,
+        padding: '1.4rem', cursor: 'pointer', position: 'relative', overflow: 'hidden',
+        boxShadow: hovered ? '0 8px 25px rgba(29,158,117,0.15)' : 'none',
+        transform: hovered ? 'translateY(-3px)' : 'none' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}>
+      
+      {/* Shimmer sweep */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+        background: 'linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%)',
+        transform: hovered ? 'translateX(100%)' : 'translateX(-100%)',
+        transition: 'transform 0.5s ease',
+        pointerEvents: 'none'
+      }} />
+
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <div style={{ fontSize: '1.5rem', marginBottom: '0.8rem', transition: 'transform 0.3s',
+          transform: hovered ? 'scale(1.1) rotate(-5deg)' : 'scale(1)' }}>{f.icon}</div>
+        <div style={{ fontSize: '0.95rem', fontWeight: 500, color: '#d8ede6',
+          marginBottom: '0.4rem' }}>{f.title}</div>
+        <div style={{ fontSize: '0.8rem', color: 'rgba(216,237,230,0.5)',
+          lineHeight: 1.5, marginBottom: '1rem' }}>{f.desc}</div>
+        <div style={{ fontSize: '0.65rem', letterSpacing: 1, textTransform: 'uppercase',
+          color: '#1d9e75', opacity: 0.8, display: 'inline-block',
+          transition: 'transform 0.3s', transform: hovered ? 'translateX(5px)' : 'none' }}>{f.tag}</div>
+      </div>
+    </div>
   );
 }

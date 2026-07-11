@@ -1,1 +1,31 @@
+/* ── Base fonts ──────────────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap');
+
+/* ── Indian language fonts ──────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap');
+
+/* ── Language-specific font stacks ──────────────────────────────── */
+[lang="hi"] body,
+[lang="mr"] body {
+  font-family: 'Noto Sans Devanagari', 'Outfit', sans-serif;
+}
+
+[lang="kn"] body {
+  font-family: 'Noto Sans Kannada', 'Outfit', sans-serif;
+}
+
+[lang="ta"] body {
+  font-family: 'Noto Sans Tamil', 'Outfit', sans-serif;
+}
+
+[lang="te"] body {
+  font-family: 'Noto Sans Telugu', 'Outfit', sans-serif;
+}
+
+[lang="bn"] body {
+  font-family: 'Noto Sans Bengali', 'Outfit', sans-serif;
+}

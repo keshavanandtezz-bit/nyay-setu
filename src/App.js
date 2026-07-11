@@ -10,6 +10,10 @@ import NyayMitra from './pages/legal/NyayMitra';
 import PrecedentFinder from './pages/legal/PrecedentFinder';
 import UndertrialAlerts from './pages/legal/UndertrialAlerts';
 import BailGenerator from './pages/legal/BailGenerator';
+import NyayYatra from './pages/citizen/NyayYatra';
+import FileComplaint from './pages/citizen/FileComplaint';
+import CaseJourney from './pages/citizen/CaseJourney';
+import CourtFinder from './pages/citizen/CourtFinder';
 import NotFound from './pages/NotFound';
 import './App.css';
 
@@ -28,6 +32,10 @@ export default function App() {
         <Route path="/legal/precedents" element={<PrecedentFinder />} />
         <Route path="/legal/alerts" element={<UndertrialAlerts />} />
         <Route path="/legal/bail" element={<BailGenerator />} />
+        <Route path="/citizen/nyay-yatra" element={<NyayYatra />} />
+        <Route path="/citizen/file-complaint" element={<FileComplaint />} />
+        <Route path="/citizen/case/:caseId" element={<CaseJourney />} />
+        <Route path="/citizen/courts" element={<CourtFinder />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

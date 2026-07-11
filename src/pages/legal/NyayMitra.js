@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
 import PageWrapper from '../../components/PageWrapper';
 import { aiAPI } from '../../services/api';
@@ -30,9 +31,11 @@ CURRENT STATUS: Trial in Progress — Cross-examination of prosecution witnesses
 PRESIDING JUDGE: Hon. Justice K. Ramakrishna, Sessions Judge, Bengaluru Urban District`;
 
 export default function NyayMitra() {
+  const { t } = useTranslation();
   const [stage, setStage] = useState('upload');
   const [extracting, setExtracting] = useState(false);
-  const [analyzing, setAnalyzing] = useState(false); // eslint-disable-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
+  const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [fileName, setFileName] = useState('');
@@ -47,11 +50,14 @@ export default function NyayMitra() {
     setFileName(file.name);
     setError('');
     setStage('processing');
-    setExtracting(false);
-    setAnalyzing(true);
+    setExtracting(true);
+    setAnalyzing(false);
 
     try {
+      setExtracting(true);
       const data = await aiAPI.analyzePDF(file);
+      setExtracting(false);
+      setAnalyzing(true);
       if (data.success) {
         setResult(data.analysis);
         setStage('result');
@@ -120,9 +126,9 @@ export default function NyayMitra() {
             <div style={{ fontSize: '0.72rem', letterSpacing: 2, textTransform: 'uppercase',
               color: 'rgba(212,168,67,0.6)', marginBottom: '0.4rem' }}>AI Case Intelligence</div>
             <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '2.2rem',
-              fontWeight: 700, color: '#e8e0cc', marginBottom: '0.3rem' }}>Nyay Mitra</h1>
+              fontWeight: 700, color: '#e8e0cc', marginBottom: '0.3rem' }}>{t('legal.nyayMitra')}</h1>
             <p style={{ fontSize: '0.82rem', color: 'rgba(232,224,204,0.4)', fontWeight: 300 }}>
-              Upload any case PDF — AI summarizes in under 60 seconds
+              {t('legal.nyayMitraDesc')}
             </p>
           </div>
           {stage === 'result' && (
@@ -207,7 +213,7 @@ export default function NyayMitra() {
             </div>
             <div style={{ fontSize: '0.8rem', color: 'rgba(232,224,204,0.35)' }}>{fileName}</div>
             <div style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: 'rgba(212,168,67,0.5)' }}>
-              {extracting ? 'Reading all pages of the document' : 'Nyay Mitra is preparing your case brief'}
+              {extracting ? 'Reading all pages of the document' : t('fileComplaint.aiSuggesting')}
             </div>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
           </div>
@@ -254,7 +260,7 @@ export default function NyayMitra() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+            <div className="grid-mobile-1 stagger-children" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
               gap: '1rem', marginBottom: '1rem' }}>
 
               <div style={{ ...cardStyle, padding: '1.2rem 1.4rem' }}>

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
+import PageWrapper from '../../components/PageWrapper';
 import { undertrials, getDaysInCustody, getBailScore } from '../../data/undertrials';
 import { aiAPI } from '../../services/api';
 
@@ -10,12 +12,20 @@ const BG = '#0d0c08';
 export default function BailGenerator() {
   const [searchParams] = useSearchParams();
   const preselectedId = searchParams.get('id');
+  const { t } = useTranslation();
 
   const [selectedId, setSelectedId] = useState(preselectedId || '');
   const [generating, setGenerating] = useState(false);
   const [application, setApplication] = useState('');
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
 
   useEffect(() => {
     if (preselectedId) setSelectedId(preselectedId);
@@ -75,35 +85,36 @@ export default function BailGenerator() {
     : 'High Risk — Bail May Be Denied';
 
   return (
-    <div style={{ minHeight: '100vh', background: BG, color: '#e8e0cc' }}>
+    <PageWrapper style={{ minHeight: '100vh', background: BG, color: '#e8e0cc' }}>
       <Navbar theme="legal" showBack={true} />
 
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '2rem 2.5rem' }}>
+      <div style={{ maxWidth: 1000, margin: '0 auto', padding: isMobile ? '1.5rem' : '2.5rem' }}>
 
-        <div style={{ marginBottom: '1.8rem' }}>
+        <div className="reveal-on-scroll" style={{ marginBottom: '2.5rem' }}>
           <div style={{ fontSize: '0.72rem', letterSpacing: 2,
             textTransform: 'uppercase', color: 'rgba(212,168,67,0.6)',
-            marginBottom: '0.4rem' }}>AI Document Generator</div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '2.2rem',
-            fontWeight: 700, color: '#e8e0cc', marginBottom: '0.3rem' }}>
-            Bail Application Generator
+            marginBottom: '0.6rem' }}>AI Document Generator</div>
+          <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '2.6rem',
+            fontWeight: 700, color: '#e8e0cc', marginBottom: '0.4rem',
+            background: 'linear-gradient(90deg, #e8e0cc, #d4a843)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            {t('legal.bailGenerator')}
           </h1>
-          <p style={{ fontSize: '0.82rem', color: 'rgba(232,224,204,0.4)', fontWeight: 300 }}>
-            Select a prisoner — AI generates a complete, court-ready bail application in seconds
+          <p style={{ fontSize: '0.9rem', color: 'rgba(232,224,204,0.5)', fontWeight: 300 }}>
+            {t('legal.bailGeneratorDesc')}
           </p>
         </div>
 
         <div style={{ display: 'grid',
-          gridTemplateColumns: application ? '1fr 1.6fr' : '1fr',
-          gap: '1.5rem', alignItems: 'start' }}>
+          gridTemplateColumns: application && !isMobile ? '1fr 1.6fr' : '1fr',
+          gap: '2rem', alignItems: 'start' }}>
 
-          <div>
-            <div style={{ background: 'rgba(255,255,255,0.02)',
+          <div className="stagger-children">
+            <div className="glass-card" style={{ background: 'rgba(255,255,255,0.02)',
               border: '1px solid rgba(212,168,67,0.1)',
-              borderRadius: 12, padding: '1.4rem', marginBottom: '1rem' }}>
-              <div style={{ fontSize: '0.65rem', letterSpacing: 2,
-                textTransform: 'uppercase', color: 'rgba(212,168,67,0.5)',
-                marginBottom: '0.8rem' }}>Select Prisoner</div>
+              borderRadius: 14, padding: '1.6rem', marginBottom: '1.5rem' }}>
+              <div style={{ fontSize: '0.7rem', letterSpacing: 2,
+                textTransform: 'uppercase', color: 'rgba(212,168,67,0.6)',
+                marginBottom: '1rem', fontWeight: 500 }}>Select Prisoner</div>
               <select
                 value={selectedId}
                 onChange={e => {
@@ -111,15 +122,17 @@ export default function BailGenerator() {
                   setApplication('');
                   setError('');
                 }}
-                style={{ width: '100%', padding: '0.8rem 1rem',
+                style={{ width: '100%', padding: '1rem',
                   background: 'rgba(212,168,67,0.04)',
-                  border: '1px solid rgba(212,168,67,0.18)',
-                  borderRadius: 8,
-                  color: selectedId ? '#e8e0cc' : 'rgba(232,224,204,0.35)',
-                  fontSize: '0.85rem', fontFamily: "'Outfit',sans-serif",
-                  outline: 'none', cursor: 'pointer' }}>
+                  border: '1px solid rgba(212,168,67,0.2)',
+                  borderRadius: 10,
+                  color: selectedId ? '#e8e0cc' : 'rgba(232,224,204,0.4)',
+                  fontSize: '0.9rem', fontFamily: "'Outfit',sans-serif",
+                  outline: 'none', cursor: 'pointer', transition: 'box-shadow 0.3s' }}
+                onFocus={e => e.target.style.boxShadow = '0 0 15px rgba(212,168,67,0.15)'}
+                onBlur={e => e.target.style.boxShadow = 'none'}>
                 <option value="" style={{ background: '#1a1408' }}>
-                  — Select prisoner —
+                  — Select prisoner to generate bail —
                 </option>
                 {undertrials.map(u => {
                   const d = getDaysInCustody(u.arrest_date);
@@ -136,40 +149,41 @@ export default function BailGenerator() {
 
             {selectedPrisoner && (
               <div style={{ background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(212,168,67,0.1)',
-                borderRadius: 12, overflow: 'hidden', marginBottom: '1rem' }}>
+                border: '1px solid rgba(212,168,67,0.15)',
+                borderRadius: 16, overflow: 'hidden', marginBottom: '1.5rem',
+                boxShadow: '0 8px 30px rgba(0,0,0,0.2)', animation: 'fadeInScale 0.4s ease-out' }}>
 
-                <div style={{ padding: '1rem 1.4rem',
-                  borderBottom: '1px solid rgba(212,168,67,0.08)',
-                  background: 'rgba(212,168,67,0.04)' }}>
+                <div style={{ padding: '1.2rem 1.6rem',
+                  borderBottom: '1px solid rgba(212,168,67,0.1)',
+                  background: 'linear-gradient(135deg, rgba(212,168,67,0.05), rgba(212,168,67,0.02))' }}>
                   <div style={{ fontFamily: "'Cormorant Garamond',serif",
-                    fontSize: '1.2rem', fontWeight: 700, color: '#e8e0cc' }}>
+                    fontSize: '1.4rem', fontWeight: 700, color: '#e8e0cc' }}>
                     {selectedPrisoner.name}
                   </div>
-                  <div style={{ fontSize: '0.72rem',
-                    color: 'rgba(232,224,204,0.4)', marginTop: 2 }}>
+                  <div style={{ fontSize: '0.75rem',
+                    color: 'rgba(232,224,204,0.5)', marginTop: 4 }}>
                     Age {selectedPrisoner.age} · {selectedPrisoner.prisoner_id}
                   </div>
                 </div>
 
-                <div style={{ padding: '1rem 1.4rem' }}>
+                <div style={{ padding: '1.2rem 1.6rem' }}>
                   {[
-                    { label: 'Charges', value: selectedPrisoner.charges },
+                    { label: t('statusTracker.charges'), value: selectedPrisoner.charges },
                     { label: 'IPC Sections', value: selectedPrisoner.ipc_sections },
-                    { label: 'Days in Custody', value: `${days} days`, highlight: true },
-                    { label: 'Court', value: selectedPrisoner.court },
-                    { label: 'Lawyer', value: selectedPrisoner.lawyer,
+                    { label: t('statusTracker.daysInCustody'), value: `${days} days`, highlight: true },
+                    { label: t('statusTracker.court'), value: selectedPrisoner.court },
+                    { label: t('statusTracker.lawyer'), value: selectedPrisoner.lawyer,
                       warn: !selectedPrisoner.has_lawyer },
                   ].map((item, i) => (
-                    <div key={i} style={{ marginBottom: '0.7rem' }}>
-                      <div style={{ fontSize: '0.6rem', letterSpacing: 1.5,
+                    <div key={i} style={{ marginBottom: '0.9rem' }}>
+                      <div style={{ fontSize: '0.65rem', letterSpacing: 1.5,
                         textTransform: 'uppercase',
-                        color: 'rgba(232,224,204,0.3)', marginBottom: 2 }}>
+                        color: 'rgba(232,224,204,0.4)', marginBottom: 3 }}>
                         {item.label}
                       </div>
-                      <div style={{ fontSize: '0.82rem',
+                      <div style={{ fontSize: '0.85rem',
                         color: item.warn ? '#f09595'
-                          : item.highlight ? GOLD : 'rgba(232,224,204,0.7)',
+                          : item.highlight ? GOLD : 'rgba(232,224,204,0.8)',
                         fontWeight: item.highlight ? 600 : 400 }}>
                         {item.value}
                       </div>
@@ -177,24 +191,31 @@ export default function BailGenerator() {
                   ))}
                 </div>
 
-                <div style={{ padding: '0.9rem 1.4rem',
-                  borderTop: '1px solid rgba(212,168,67,0.08)',
-                  background: 'rgba(255,255,255,0.01)' }}>
+                <div style={{ padding: '1rem 1.6rem',
+                  borderTop: '1px solid rgba(212,168,67,0.1)',
+                  background: 'rgba(255,255,255,0.02)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between',
-                    alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <div style={{ fontSize: '0.6rem', letterSpacing: 1.5,
+                    alignItems: 'center', marginBottom: '0.6rem' }}>
+                    <div style={{ fontSize: '0.65rem', letterSpacing: 1.5,
                       textTransform: 'uppercase',
-                      color: 'rgba(232,224,204,0.3)' }}>AI Bail Risk Score</div>
-                    <div style={{ fontSize: '1rem', fontWeight: 600,
+                      color: 'rgba(232,224,204,0.4)' }}>AI Bail Risk Score</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 600,
                       color: scoreColor }}>{bailScore}/100</div>
                   </div>
-                  <div style={{ height: 6, background: 'rgba(255,255,255,0.06)',
-                    borderRadius: 3, overflow: 'hidden', marginBottom: '0.4rem' }}>
-                    <div style={{ height: '100%', borderRadius: 3,
-                      width: `${bailScore}%`, background: scoreColor,
-                      transition: 'width 0.5s ease' }} />
+                  <div style={{ height: 8, background: 'rgba(255,255,255,0.08)',
+                    borderRadius: 4, overflow: 'hidden', marginBottom: '0.6rem' }}>
+                    <div style={{ height: '100%', borderRadius: 4,
+                      width: 0, background: scoreColor,
+                      animation: 'slideInLeft 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards' }}>
+                      <style>{`
+                        @keyframes slideInLeft {
+                          from { width: 0; }
+                          to { width: ${bailScore}%; }
+                        }
+                      `}</style>
+                    </div>
                   </div>
-                  <div style={{ fontSize: '0.72rem', color: scoreColor }}>
+                  <div style={{ fontSize: '0.75rem', color: scoreColor, fontWeight: 500 }}>
                     {scoreLabel}
                   </div>
                 </div>
@@ -205,21 +226,34 @@ export default function BailGenerator() {
               <button
                 onClick={generateBailApplication}
                 disabled={generating}
-                style={{ width: '100%', padding: '0.9rem',
-                  background: generating ? 'rgba(212,168,67,0.3)' : GOLD,
-                  border: 'none', borderRadius: 10, color: '#0d0c08',
-                  fontFamily: "'Outfit',sans-serif", fontSize: '0.9rem',
+                style={{ width: '100%', padding: '1.1rem',
+                  background: generating ? 'rgba(212,168,67,0.3)' : 'linear-gradient(135deg, #d4a843, #e2bb61)',
+                  border: 'none', borderRadius: 12, color: '#0d0c08',
+                  fontFamily: "'Outfit',sans-serif", fontSize: '0.95rem',
                   fontWeight: 600,
                   cursor: generating ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s' }}>
+                  transition: 'all 0.3s',
+                  boxShadow: generating ? 'none' : '0 4px 15px rgba(212,168,67,0.3)' }}
+                onMouseEnter={e => {
+                  if(!generating) {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(212,168,67,0.4)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if(!generating) {
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(212,168,67,0.3)';
+                  }
+                }}>
                 {generating ? (
                   <span style={{ display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', gap: 8 }}>
-                    <span style={{ display: 'inline-block', width: 14, height: 14,
+                    justifyContent: 'center', gap: 10 }}>
+                    <span style={{ display: 'inline-block', width: 16, height: 16,
                       border: '2px solid #0d0c08',
                       borderTopColor: 'transparent', borderRadius: '50%',
                       animation: 'spin 0.8s linear infinite' }} />
-                    Generating Application...
+                    Drafting Application via AI...
                   </span>
                 ) : (
                   application ? '↻ Regenerate Application' : 'Generate Bail Application →'
@@ -228,70 +262,82 @@ export default function BailGenerator() {
             )}
 
             {error && (
-              <div style={{ marginTop: '1rem', padding: '0.8rem 1rem',
+              <div style={{ marginTop: '1.5rem', padding: '1rem 1.2rem',
                 background: 'rgba(226,75,74,0.08)',
                 border: '1px solid rgba(226,75,74,0.25)',
-                borderRadius: 8, color: '#f09595', fontSize: '0.8rem' }}>
+                borderRadius: 10, color: '#f09595', fontSize: '0.85rem',
+                animation: 'fadeInUp 0.3s ease-out' }}>
                 ⚠ {error}
               </div>
             )}
           </div>
 
           {application && (
-            <div style={{ background: 'rgba(255,255,255,0.02)',
+            <div className="glass-card" style={{ background: 'rgba(255,255,255,0.02)',
               border: '1px solid rgba(212,168,67,0.15)',
-              borderRadius: 12, overflow: 'hidden' }}>
+              borderRadius: 16, overflow: 'hidden', animation: 'fadeInScale 0.5s ease-out' }}>
 
               <div style={{ display: 'flex', alignItems: 'center',
-                justifyContent: 'space-between', padding: '0.8rem 1.2rem',
+                justifyContent: 'space-between', padding: '1rem 1.6rem',
                 borderBottom: '1px solid rgba(212,168,67,0.1)',
-                background: 'rgba(212,168,67,0.04)' }}>
+                background: 'rgba(212,168,67,0.05)' }}>
                 <div>
-                  <div style={{ fontSize: '0.65rem', letterSpacing: 1.5,
+                  <div style={{ fontSize: '0.7rem', letterSpacing: 1.5,
                     textTransform: 'uppercase',
-                    color: 'rgba(212,168,67,0.6)' }}>Generated Document</div>
-                  <div style={{ fontSize: '0.72rem',
-                    color: 'rgba(232,224,204,0.35)', marginTop: 2 }}>
+                    color: 'rgba(212,168,67,0.7)', fontWeight: 500 }}>Generated Document</div>
+                  <div style={{ fontSize: '0.75rem',
+                    color: 'rgba(232,224,204,0.4)', marginTop: 4 }}>
                     Review before filing — add case number and sign
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', gap: '0.6rem' }}>
                   <button onClick={copyToClipboard}
-                    style={{ padding: '0.45rem 1rem', fontSize: '0.75rem',
+                    style={{ padding: '0.5rem 1.2rem', fontSize: '0.8rem',
                       background: copied
                         ? 'rgba(29,158,117,0.15)' : 'rgba(212,168,67,0.1)',
                       border: `1px solid ${copied
                         ? 'rgba(29,158,117,0.3)' : 'rgba(212,168,67,0.25)'}`,
-                      borderRadius: 6,
+                      borderRadius: 8,
                       color: copied ? '#1d9e75' : GOLD,
                       cursor: 'pointer', fontFamily: "'Outfit',sans-serif",
-                      transition: 'all 0.2s' }}>
+                      transition: 'all 0.2s', fontWeight: 500 }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
                     {copied ? '✓ Copied!' : 'Copy Text'}
                   </button>
                   <button onClick={() => window.print()}
-                    style={{ padding: '0.45rem 1rem', fontSize: '0.75rem',
+                    style={{ padding: '0.5rem 1.2rem', fontSize: '0.8rem',
                       background: 'transparent',
-                      border: '1px solid rgba(212,168,67,0.15)',
-                      borderRadius: 6, color: 'rgba(212,168,67,0.5)',
-                      cursor: 'pointer', fontFamily: "'Outfit',sans-serif" }}>
+                      border: '1px solid rgba(212,168,67,0.2)',
+                      borderRadius: 8, color: 'rgba(212,168,67,0.6)',
+                      cursor: 'pointer', fontFamily: "'Outfit',sans-serif", transition: 'all 0.2s' }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = 'rgba(212,168,67,0.1)';
+                      e.currentTarget.style.color = GOLD;
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.color = 'rgba(212,168,67,0.6)';
+                    }}>
                     Print
                   </button>
                 </div>
               </div>
 
-              <div style={{ padding: '1.4rem', maxHeight: '70vh', overflowY: 'auto' }}>
-                <pre style={{ fontFamily: 'Georgia, serif', fontSize: '0.82rem',
-                  color: 'rgba(232,224,204,0.8)', lineHeight: 1.9,
-                  whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+              <div style={{ padding: '2rem', maxHeight: isMobile ? '50vh' : '65vh', overflowY: 'auto' }}>
+                <pre style={{ fontFamily: 'Georgia, serif', fontSize: '0.88rem',
+                  color: 'rgba(232,224,204,0.85)', lineHeight: 2,
+                  whiteSpace: 'pre-wrap', wordWrap: 'break-word',
+                  animation: 'fadeInUp 1s ease-out' }}>
                   {application}
                 </pre>
               </div>
 
-              <div style={{ padding: '0.7rem 1.2rem',
-                borderTop: '1px solid rgba(212,168,67,0.08)',
-                fontSize: '0.7rem', color: 'rgba(232,224,204,0.25)',
-                display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span>⚠</span>
+              <div style={{ padding: '0.9rem 1.6rem',
+                borderTop: '1px solid rgba(212,168,67,0.1)',
+                fontSize: '0.75rem', color: 'rgba(232,224,204,0.35)',
+                display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(0,0,0,0.1)' }}>
+                <span style={{ color: GOLD }}>⚠</span>
                 <span>AI-generated draft. Review carefully, add correct case number,
                   obtain client signature before filing.</span>
               </div>
@@ -300,6 +346,6 @@ export default function BailGenerator() {
         </div>
       </div>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-    </div>
+    </PageWrapper>
   );
 }

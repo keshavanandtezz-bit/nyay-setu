@@ -1,8 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './i18n/i18n'; // Initialize i18next before App mounts
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+// Initialize theme before render to prevent flash
+const savedTheme = localStorage.getItem('nyay-setu-theme') || 'dark';
+document.documentElement.setAttribute('data-theme', savedTheme);
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

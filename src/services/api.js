@@ -1,17 +1,7 @@
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-const GROQ_KEY = process.env.REACT_APP_GROQ_API_KEY || '';
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL = 'llama-3.3-70b-versatile';
+// ── Nyay Setu API Client ─────────────────────────────────────────────
+// All AI calls are routed through the backend. NO API keys in frontend.
 
-// ── Test if backend is reachable ─────────────────────────────────────
-async function isBackendAlive() {
-  try {
-    const res = await fetch(`${BASE_URL}/health`, { signal: AbortSignal.timeout(5000) });
-    return res.ok;
-  } catch {
-    return false;
-  }
-}
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 // ── Generic backend request ──────────────────────────────────────────
 async function request(path, options = {}) {
@@ -24,39 +14,6 @@ async function request(path, options = {}) {
     throw new Error(err.detail || `Request failed: ${res.status}`);
   }
   return res.json();
-}
-
-// ── Direct Groq call ─────────────────────────────────────────────────
-async function callGroqDirect(messages, systemPrompt = '') {
-  if (!GROQ_KEY || GROQ_KEY === 'your_groq_api_key_here') {
-    throw new Error('Groq API key not configured. Add REACT_APP_GROQ_API_KEY to Vercel environment variables.');
-  }
-
-  const allMessages = systemPrompt
-    ? [{ role: 'system', content: systemPrompt }, ...messages]
-    : messages;
-
-  const response = await fetch(GROQ_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${GROQ_KEY}`,
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 1000,
-      temperature: 0.7,
-      messages: allMessages,
-    }),
-  });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `Groq error ${response.status}`);
-  }
-
-  const data = await response.json();
-  return data.choices?.[0]?.message?.content || '';
 }
 
 // ── CITIZEN API ──────────────────────────────────────────────────────
@@ -87,154 +44,137 @@ export const legalAPI = {
 };
 
 // ── AI API ───────────────────────────────────────────────────────────
+// All methods route through backend — no direct LLM calls from frontend.
 export const aiAPI = {
-
-  // ── RightsBot ──────────────────────────────────────────────────────
-  rightsBot: async (messages) => {
-    // Try backend first
-    const backendAlive = await isBackendAlive();
-
-    if (backendAlive) {
-      try {
-        const data = await request('/ai/rights-bot', {
-          method: 'POST',
-          body: JSON.stringify({ messages }),
-        });
-        if (data.reply) return data;
-      } catch (e) {
-        console.warn('Backend AI failed, using direct Groq:', e.message);
-      }
-    } else {
-      console.warn('Backend offline, using direct Groq for RightsBot');
-    }
-
-    // Direct Groq fallback
-    const reply = await callGroqDirect(
-      messages,
-      `You are Nyay Sahayak, a compassionate legal rights assistant for Indian citizens.
-Explain Indian laws and rights in simple plain English. Never give specific legal advice.
-Always suggest consulting a lawyer for personal situations.
-Keep answers under 200 words. Use bullet points for lists.
-When relevant mention free legal aid helpline: 15100.
-Focus on: IPC, CrPC, bail rights, undertrial rights, FIR procedures, legal aid, domestic violence.`
-    );
-    return { reply };
+  rightsBot: async (messages, language = 'en') => {
+    return request('/ai/rights-bot', {
+      method: 'POST',
+      body: JSON.stringify({ messages, language }),
+    });
   },
 
-  // ── Analyze PDF ────────────────────────────────────────────────────
-  analyzePDF: async (file) => {
+  analyzePDF: async (file, language = 'en') => {
     const formData = new FormData();
     formData.append('file', file);
-    try {
-      const res = await fetch(`${BASE_URL}/ai/analyze-case`, {
-        method: 'POST',
-        body: formData,
-      });
-      if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
-      return res.json();
-    } catch (e) {
-      throw new Error('PDF upload requires backend. Make sure Render is running: ' + e.message);
+    formData.append('language', language);
+
+    const res = await fetch(`${BASE_URL}/ai/analyze-case`, {
+      method: 'POST',
+      body: formData,
+      // No Content-Type header — browser sets multipart boundary automatically
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || `PDF upload failed: ${res.status}`);
     }
+    return res.json();
   },
 
-  // ── Analyze Text (Sample Case) ─────────────────────────────────────
-  analyzeText: async (text) => {
-    const backendAlive = await isBackendAlive();
-
-    if (backendAlive) {
-      try {
-        const data = await request('/ai/analyze-text', {
-          method: 'POST',
-          body: JSON.stringify({ text }),
-        });
-        if (data.success) return data;
-      } catch (e) {
-        console.warn('Backend analyzeText failed, using direct Groq:', e.message);
-      }
-    }
-
-    // Direct Groq fallback
-    const words = text.split(/\s+/).slice(0, 3500).join(' ');
-    const reply = await callGroqDirect(
-      [{ role: 'user', content: `Analyze this Indian court document and return ONLY valid JSON with no extra text:\n\n${words}` }],
-      `You are Nyay Mitra, an AI legal assistant for Indian courts.
-Return ONLY valid JSON, no markdown, no backticks, no extra text.
-Use this exact structure:
-{
-  "case_title": "State vs. Name",
-  "case_number": "case number",
-  "court": "court name",
-  "judge": "judge name or Unknown",
-  "accused": ["name1"],
-  "charges": ["charge1"],
-  "ipc_sections": ["IPC 420"],
-  "bail_status": "Denied or Granted or Not Applied",
-  "current_status": "current stage",
-  "key_facts": ["fact1", "fact2", "fact3"],
-  "important_dates": [{"event": "FIR Filed", "date": "DD.MM.YYYY"}],
-  "summary": "3 sentence summary in plain English",
-  "next_hearing": "DD.MM.YYYY or Unknown",
-  "witnesses_total": 0,
-  "witnesses_examined": 0
-}`
-    );
-
-    try {
-      const clean = reply.replace(/```json|```/g, '').trim();
-      const analysis = JSON.parse(clean);
-      return { success: true, analysis };
-    } catch {
-      throw new Error('Could not parse AI response. Please try again.');
-    }
+  analyzeText: async (text, language = 'en') => {
+    return request('/ai/analyze-text', {
+      method: 'POST',
+      body: JSON.stringify({ text, language }),
+    });
   },
 
-  // ── Generate Bail Application ──────────────────────────────────────
-  generateBail: async (payload) => {
-    const backendAlive = await isBackendAlive();
-
-    if (backendAlive) {
-      try {
-        const data = await request('/ai/generate-bail', {
-          method: 'POST',
-          body: JSON.stringify(payload),
-        });
-        if (data.success) return data;
-      } catch (e) {
-        console.warn('Backend generateBail failed, using direct Groq:', e.message);
-      }
-    }
-
-    // Direct Groq fallback
-    const today = new Date().toLocaleDateString('en-IN',
-      { day: 'numeric', month: 'long', year: 'numeric' });
-
-    const application = await callGroqDirect(
-      [{
-        role: 'user',
-        content: `Generate a complete formal bail application for Indian court.
-
-Name: ${payload.prisoner_name}
-Age: ${payload.age} years
-Prisoner ID: ${payload.prisoner_id}
-Charges: ${payload.charges}
-IPC Sections: ${payload.ipc_sections}
-Court: ${payload.court}
-District: ${payload.district}
-Date of Arrest: ${payload.arrest_date}
-Days in Custody: ${payload.days_in_custody} days
-Prior Criminal Record: ${payload.has_prior_record ? 'Yes' : 'No'}
-Current Status: ${payload.case_status}
-Legal Representation: ${payload.lawyer}
-Today's Date: ${today}
-
-Write a complete bail application with proper court header, grounds for bail 
-emphasizing ${payload.days_in_custody} days in custody and Article 21 rights, 
-prayer clause, and verification.`
-      }],
-      `You are an expert Indian criminal lawyer. Write formal bail applications 
-for Indian courts using proper legal language and CrPC Section 437/439 structure.`
-    );
-
-    return { success: true, application };
+  generateBail: async (payload, language = 'en') => {
+    return request('/ai/generate-bail', {
+      method: 'POST',
+      body: JSON.stringify({ ...payload, language }),
+    });
   },
+
+  // ── Phase 3 methods ─────────────────────────────────────────────────
+  suggestIPC: async (description, language = 'en') => {
+    return request('/ai/suggest-ipc', {
+      method: 'POST',
+      body: JSON.stringify({ description, language }),
+    });
+  },
+
+  caseAdvisor: async (caseId, currentStage, question, language = 'en') => {
+    return request('/ai/case-advisor', {
+      method: 'POST',
+      body: JSON.stringify({ caseId, currentStage, question, language }),
+    });
+  },
+
+  summarizeComplaint: async (complaintData, language = 'en') => {
+    return request('/ai/summarize-complaint', {
+      method: 'POST',
+      body: JSON.stringify({ complaintData, language }),
+    });
+  },
+};
+
+// ── CASE API (Phase 3) ──────────────────────────────────────────────
+export const caseAPI = {
+  fileComplaint: (data) =>
+    request('/case/file-complaint', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  getCase: (caseId) =>
+    request(`/case/${encodeURIComponent(caseId)}`),
+
+  searchCases: (phone = '', name = '') => {
+    const params = new URLSearchParams();
+    if (phone) params.set('phone', phone);
+    if (name) params.set('name', name);
+    const qs = params.toString();
+    return request(`/case/search${qs ? '?' + qs : ''}`);
+  },
+
+  updateStage: (caseId, stage, notes = '') =>
+    request(`/case/${encodeURIComponent(caseId)}/stage`, {
+      method: 'PUT',
+      body: JSON.stringify({ stage, notes }),
+    }),
+
+  uploadDocument: (caseId, metadata) =>
+    request(`/case/${encodeURIComponent(caseId)}/documents`, {
+      method: 'POST',
+      body: JSON.stringify(metadata),
+    }),
+
+  getDocuments: (caseId) =>
+    request(`/case/${encodeURIComponent(caseId)}/documents`),
+
+  getAnalytics: () =>
+    request('/case/analytics'),
+};
+
+// ── COURTS API (Phase 3) ────────────────────────────────────────────
+export const courtsAPI = {
+  findCourts: (type = '', district = '') => {
+    const params = new URLSearchParams();
+    if (type) params.set('type', type);
+    if (district) params.set('district', district);
+    const qs = params.toString();
+    return request(`/courts/find${qs ? '?' + qs : ''}`);
+  },
+
+  getCourt: (courtId) =>
+    request(`/courts/${encodeURIComponent(courtId)}`),
+};
+
+// ── AUTH API (Phase 3) ──────────────────────────────────────────────
+export const authAPI = {
+  register: (name, email, password, role) =>
+    request('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ name, email, password, role }),
+    }),
+
+  login: (email, password) =>
+    request('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    }),
+
+  getProfile: (token) =>
+    request('/auth/me', {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
 };
