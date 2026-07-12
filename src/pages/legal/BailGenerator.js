@@ -7,7 +7,7 @@ import { undertrials, getDaysInCustody, getBailScore } from '../../data/undertri
 import { aiAPI } from '../../services/api';
 
 const GOLD = '#d4a843';
-const BG = '#0d0c08';
+const BG = 'var(--bg-legal)';
 
 export default function BailGenerator() {
   const [searchParams] = useSearchParams();
@@ -85,7 +85,7 @@ export default function BailGenerator() {
     : 'High Risk — Bail May Be Denied';
 
   return (
-    <PageWrapper style={{ minHeight: '100vh', background: BG, color: '#e8e0cc' }}>
+    <PageWrapper style={{ minHeight: '100vh', background: BG, color: 'var(--text-legal)' }}>
       <Navbar theme="legal" showBack={true} />
 
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: isMobile ? '1.5rem' : '2.5rem' }}>
@@ -95,11 +95,11 @@ export default function BailGenerator() {
             textTransform: 'uppercase', color: 'rgba(212,168,67,0.6)',
             marginBottom: '0.6rem' }}>AI Document Generator</div>
           <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '2.6rem',
-            fontWeight: 700, color: '#e8e0cc', marginBottom: '0.4rem',
-            background: 'linear-gradient(90deg, #e8e0cc, #d4a843)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            fontWeight: 700, color: 'var(--text-legal)', marginBottom: '0.4rem',
+            background: 'linear-gradient(90deg, var(--text-legal), #d4a843)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             {t('legal.bailGenerator')}
           </h1>
-          <p style={{ fontSize: '0.9rem', color: 'rgba(232,224,204,0.5)', fontWeight: 300 }}>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 300 }}>
             {t('legal.bailGeneratorDesc')}
           </p>
         </div>
@@ -126,7 +126,7 @@ export default function BailGenerator() {
                   background: 'rgba(212,168,67,0.04)',
                   border: '1px solid rgba(212,168,67,0.2)',
                   borderRadius: 10,
-                  color: selectedId ? '#e8e0cc' : 'rgba(232,224,204,0.4)',
+                  color: selectedId ? 'var(--text-legal)' : 'var(--text-muted)',
                   fontSize: '0.9rem', fontFamily: "'Outfit',sans-serif",
                   outline: 'none', cursor: 'pointer', transition: 'box-shadow 0.3s' }}
                 onFocus={e => e.target.style.boxShadow = '0 0 15px rgba(212,168,67,0.15)'}
@@ -157,11 +157,11 @@ export default function BailGenerator() {
                   borderBottom: '1px solid rgba(212,168,67,0.1)',
                   background: 'linear-gradient(135deg, rgba(212,168,67,0.05), rgba(212,168,67,0.02))' }}>
                   <div style={{ fontFamily: "'Cormorant Garamond',serif",
-                    fontSize: '1.4rem', fontWeight: 700, color: '#e8e0cc' }}>
+                    fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-legal)' }}>
                     {selectedPrisoner.name}
                   </div>
                   <div style={{ fontSize: '0.75rem',
-                    color: 'rgba(232,224,204,0.5)', marginTop: 4 }}>
+                    color: 'var(--text-muted)', marginTop: 4 }}>
                     Age {selectedPrisoner.age} · {selectedPrisoner.prisoner_id}
                   </div>
                 </div>
@@ -178,12 +178,12 @@ export default function BailGenerator() {
                     <div key={i} style={{ marginBottom: '0.9rem' }}>
                       <div style={{ fontSize: '0.65rem', letterSpacing: 1.5,
                         textTransform: 'uppercase',
-                        color: 'rgba(232,224,204,0.4)', marginBottom: 3 }}>
+                        color: 'var(--text-muted)', marginBottom: 3 }}>
                         {item.label}
                       </div>
                       <div style={{ fontSize: '0.85rem',
                         color: item.warn ? '#f09595'
-                          : item.highlight ? GOLD : 'rgba(232,224,204,0.8)',
+                          : item.highlight ? GOLD : 'var(--text-muted)',
                         fontWeight: item.highlight ? 600 : 400 }}>
                         {item.value}
                       </div>
@@ -198,7 +198,7 @@ export default function BailGenerator() {
                     alignItems: 'center', marginBottom: '0.6rem' }}>
                     <div style={{ fontSize: '0.65rem', letterSpacing: 1.5,
                       textTransform: 'uppercase',
-                      color: 'rgba(232,224,204,0.4)' }}>AI Bail Risk Score</div>
+                      color: 'var(--text-muted)' }}>AI Bail Risk Score</div>
                     <div style={{ fontSize: '1.1rem', fontWeight: 600,
                       color: scoreColor }}>{bailScore}/100</div>
                   </div>
@@ -286,7 +286,7 @@ export default function BailGenerator() {
                     textTransform: 'uppercase',
                     color: 'rgba(212,168,67,0.7)', fontWeight: 500 }}>Generated Document</div>
                   <div style={{ fontSize: '0.75rem',
-                    color: 'rgba(232,224,204,0.4)', marginTop: 4 }}>
+                    color: 'var(--text-muted)', marginTop: 4 }}>
                     Review before filing — add case number and sign
                   </div>
                 </div>
@@ -326,7 +326,7 @@ export default function BailGenerator() {
 
               <div style={{ padding: '2rem', maxHeight: isMobile ? '50vh' : '65vh', overflowY: 'auto' }}>
                 <pre style={{ fontFamily: 'Georgia, serif', fontSize: '0.88rem',
-                  color: 'rgba(232,224,204,0.85)', lineHeight: 2,
+                  color: 'var(--text-muted)', lineHeight: 2,
                   whiteSpace: 'pre-wrap', wordWrap: 'break-word',
                   animation: 'fadeInUp 1s ease-out' }}>
                   {application}
@@ -335,7 +335,7 @@ export default function BailGenerator() {
 
               <div style={{ padding: '0.9rem 1.6rem',
                 borderTop: '1px solid rgba(212,168,67,0.1)',
-                fontSize: '0.75rem', color: 'rgba(232,224,204,0.35)',
+                fontSize: '0.75rem', color: 'var(--text-muted)',
                 display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(0,0,0,0.1)' }}>
                 <span style={{ color: GOLD }}>⚠</span>
                 <span>AI-generated draft. Review carefully, add correct case number,

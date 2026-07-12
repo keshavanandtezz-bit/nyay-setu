@@ -6,7 +6,7 @@ import { courtsAPI } from '../../services/api';
 
 /* ── Constants ───────────────────────────────────────────────────────── */
 const C = {
-  bg: '#08120f', text: '#d8ede6', sub: 'rgba(216,237,230,0.45)',
+  bg: 'var(--bg-citizen)', text: 'var(--text-citizen)', sub: 'var(--text-muted)',
   green: '#1d9e75', greenLight: '#2ed89c',
   cardBg: 'rgba(29,158,117,0.05)', cardBorder: 'rgba(29,158,117,0.12)',
   cardHoverBg: 'rgba(29,158,117,0.1)', cardHoverBorder: 'rgba(29,158,117,0.25)',
@@ -269,8 +269,8 @@ function DetailRow({ icon, label, value, accent }) {
     <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: '0.82rem' }}>
       <span style={{ fontSize: '0.85rem', flexShrink: 0 }}>{icon}</span>
       <div>
-        <span style={{ color: 'rgba(216,237,230,0.45)', marginRight: 4 }}>{label}:</span>
-        <span style={{ color: accent || '#d8ede6', fontWeight: accent ? 600 : 400 }}>{value}</span>
+        <span style={{ color: 'var(--text-muted)', marginRight: 4 }}>{label}:</span>
+        <span style={{ color: accent || 'var(--text-citizen)', fontWeight: accent ? 600 : 400 }}>{value}</span>
       </div>
     </div>
   );

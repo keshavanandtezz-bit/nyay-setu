@@ -7,7 +7,6 @@ import LoadingSkeleton from '../../components/LoadingSkeleton';
 import { citizenAPI } from '../../services/api';
 import { searchPrisoners, getDaysInCustody, getAlertStatus } from '../../data/prisoners';
 
-const G = '#08120f';
 const TEAL = '#1d9e75';
 
 export default function StatusTracker() {
@@ -60,18 +59,18 @@ export default function StatusTracker() {
   }
 
   return (
-    <PageWrapper style={{ minHeight: '100vh', background: G, color: '#d8ede6' }}>
+    <PageWrapper style={{ minHeight: '100vh', background: 'var(--bg-citizen)', color: 'var(--text-citizen)' }}>
       <Navbar theme="green" showBack={true} />
 
       <div style={{ maxWidth: 900, margin: '0 auto', padding: isMobile ? '1.5rem' : '2rem 2.5rem' }}>
 
         <div className="reveal-on-scroll" style={{ marginBottom: '2.5rem' }}>
           <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '2.2rem',
-            fontWeight: 700, marginBottom: '0.4rem', color: '#d8ede6',
+            fontWeight: 700, marginBottom: '0.4rem', color: 'var(--text-citizen)',
             background: 'linear-gradient(90deg, #d8ede6, #1d9e75)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             {t('statusTracker.title')}
           </div>
-          <p style={{ fontSize: '0.85rem', color: 'rgba(216,237,230,0.5)',
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)',
             fontWeight: 300, marginBottom: '1.2rem' }}>
             {t('statusTracker.searchPlaceholder')}
           </p>
@@ -86,7 +85,7 @@ export default function StatusTracker() {
               onKeyDown={handleKey}
               placeholder={isMobile ? "ID or Name..." : "e.g. KA/BLR/2024/001 or Ramesh Kumar"}
               style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none',
-                padding: '0.9rem 1.2rem', fontSize: '0.9rem', color: '#d8ede6',
+                padding: '0.9rem 1.2rem', fontSize: '0.9rem', color: 'var(--text-citizen)',
                 fontFamily: "'Outfit',sans-serif" }}
             />
             <button onClick={handleSearch}
@@ -99,7 +98,7 @@ export default function StatusTracker() {
             </button>
           </div>
           <div style={{ marginTop: '0.6rem', fontSize: '0.75rem',
-            color: 'rgba(216,237,230,0.3)' }}>
+            color: 'var(--text-dim)' }}>
             Try: KA/BLR/2024/001 · KA/MYS/2024/047 · KA/TUK/2023/112
           </div>
         </div>
@@ -115,9 +114,9 @@ export default function StatusTracker() {
             border: '1px solid rgba(29,158,117,0.1)', borderRadius: 12,
             background: 'rgba(29,158,117,0.03)', animation: 'fadeInScale 0.4s ease-out' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem', animation: 'float 4s infinite ease-in-out' }}>🔍</div>
-            <div style={{ fontSize: '1.2rem', color: '#d8ede6', marginBottom: '0.5rem',
+            <div style={{ fontSize: '1.2rem', color: 'var(--text-citizen)', marginBottom: '0.5rem',
               fontWeight: 500 }}>{t('common.noResults')}</div>
-            <div style={{ fontSize: '0.85rem', color: 'rgba(216,237,230,0.5)',
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)',
               lineHeight: 1.6 }}>
               We could not find a prisoner matching "{query}".<br />
               Please check the ID or name and try again. If the issue persists,<br />
@@ -129,7 +128,7 @@ export default function StatusTracker() {
 
         {!loading && results.length > 1 && !selected && (
           <div className="stagger-children">
-            <div style={{ fontSize: '0.8rem', color: 'rgba(216,237,230,0.5)',
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)',
               marginBottom: '1.2rem', fontWeight: 500 }}>
               Found {results.length} results — select one to view details:
             </div>
@@ -153,8 +152,8 @@ export default function StatusTracker() {
                 }}>
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '1.05rem',
-                    color: '#d8ede6' }}>{p.name || p.prisoner_name}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'rgba(216,237,230,0.5)',
+                    color: 'var(--text-citizen)' }}>{p.name || p.prisoner_name}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)',
                     marginTop: 4 }}>
                     {p.prisoner_id} · {p.district}
                   </div>
@@ -230,7 +229,7 @@ function PrisonerCard({ prisoner: p, isMobile }) {
 
         <div style={{ padding: '1.8rem',
           borderBottom: '1px solid rgba(29,158,117,0.1)',
-          background: 'rgba(255,255,255,0.02)',
+          background: 'var(--bg-card)',
           display: 'flex', flexDirection: isMobile ? 'column' : 'row', 
           alignItems: isMobile ? 'flex-start' : 'center', 
           justifyContent: 'space-between', gap: '1rem' }}>
@@ -244,22 +243,22 @@ function PrisonerCard({ prisoner: p, isMobile }) {
             <div>
               <div style={{ fontFamily: "'Cormorant Garamond',serif",
                 fontSize: '1.8rem', fontWeight: 700,
-                color: '#d8ede6', lineHeight: 1, marginBottom: 6 }}>{name}</div>
-              <div style={{ fontSize: '0.85rem', color: 'rgba(216,237,230,0.5)' }}>
+                color: 'var(--text-citizen)', lineHeight: 1, marginBottom: 6 }}>{name}</div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 Age {p.age || '—'} · {p.prisoner_id}
               </div>
             </div>
           </div>
           <div style={{ textAlign: isMobile ? 'left' : 'right',
-            background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: 12, border: '1px solid rgba(255,255,255,0.03)' }}>
+            background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: 12, border: 'var(--border-card)' }}>
             <div style={{ fontSize: '0.65rem', letterSpacing: 2,
-              textTransform: 'uppercase', color: 'rgba(216,237,230,0.4)',
+              textTransform: 'uppercase', color: 'var(--text-muted)',
               marginBottom: 4 }}>{t('statusTracker.daysInCustody')}</div>
             <div style={{ fontFamily: "'Cormorant Garamond',serif",
               fontSize: '2.5rem', fontWeight: 700, color: ac.text, lineHeight: 1 }}>
               {rawDays}
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'rgba(216,237,230,0.4)', marginTop: 4 }}>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4 }}>
               since {formatDate(p.arrest_date)}
             </div>
           </div>
@@ -285,10 +284,10 @@ function PrisonerCard({ prisoner: p, isMobile }) {
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
               <div style={{ fontSize: '0.67rem', letterSpacing: '1.5px',
-                textTransform: 'uppercase', color: 'rgba(216,237,230,0.4)',
+                textTransform: 'uppercase', color: 'var(--text-muted)',
                 marginBottom: '0.4rem' }}>{item.label}</div>
               <div style={{ fontSize: '0.9rem',
-                color: item.highlight ? '#f09595' : '#d8ede6',
+                color: item.highlight ? '#f09595' : 'var(--text-citizen)',
                 fontWeight: item.highlight ? 500 : 400 }}>{item.value || '—'}</div>
               {item.sub && (
                 <div style={{ fontSize: '0.75rem', color: 'rgba(29,158,117,0.8)',
@@ -305,14 +304,14 @@ function PrisonerCard({ prisoner: p, isMobile }) {
             display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <div style={{ fontSize: '0.67rem', letterSpacing: '1.5px',
-                textTransform: 'uppercase', color: 'rgba(216,237,230,0.5)',
+                textTransform: 'uppercase', color: 'var(--text-muted)',
                 marginBottom: '0.4rem' }}>{t('statusTracker.nextHearing')}</div>
               <div style={{ fontSize: '1.2rem', fontWeight: 600,
-                color: '#d8ede6' }}>{formatDate(nextHearing)}</div>
+                color: 'var(--text-citizen)' }}>{formatDate(nextHearing)}</div>
             </div>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '0.67rem', letterSpacing: '1.5px',
-                textTransform: 'uppercase', color: 'rgba(216,237,230,0.5)',
+                textTransform: 'uppercase', color: 'var(--text-muted)',
                 marginBottom: '0.4rem' }}>{t('courtCalendar.daysUntil')}</div>
               <div style={{ fontFamily: "'Cormorant Garamond',serif",
                 fontSize: '2rem', fontWeight: 700, color: '#d4a843' }}>
@@ -324,11 +323,11 @@ function PrisonerCard({ prisoner: p, isMobile }) {
       </div>
 
       {hearings.length > 0 && (
-        <div style={{ background: 'rgba(255,255,255,0.02)',
+        <div style={{ background: 'var(--bg-card)',
           border: '1px solid rgba(29,158,117,0.15)', borderRadius: 16,
           padding: '1.8rem', marginBottom: '2rem' }}>
           <div style={{ fontFamily: "'Cormorant Garamond',serif",
-            fontSize: '1.4rem', fontWeight: 600, color: '#d8ede6',
+            fontSize: '1.4rem', fontWeight: 600, color: 'var(--text-citizen)',
             marginBottom: '1.8rem' }}>{t('statusTracker.hearingHistory')}</div>
           <div className="stagger-children" style={{ position: 'relative', paddingLeft: '1.8rem' }}>
             <div style={{ position: 'absolute', left: 7, top: 0, bottom: 0,
@@ -340,14 +339,14 @@ function PrisonerCard({ prisoner: p, isMobile }) {
                   width: 14, height: 14, borderRadius: '50%',
                   background: i === hearings.length - 1
                     ? '#1d9e75' : 'rgba(29,158,117,0.25)',
-                  border: '2px solid rgba(8,18,15,1)', zIndex: 1,
+                  border: '2px solid var(--bg-citizen)', zIndex: 1,
                   boxShadow: i === hearings.length - 1 ? '0 0 10px rgba(29,158,117,0.5)' : 'none' }} />
-                <div style={{ fontSize: '0.75rem', color: 'rgba(216,237,230,0.5)',
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)',
                   marginBottom: '0.3rem', letterSpacing: '0.5px' }}>
                   {new Date(h.hearing_date || h.date).toLocaleDateString('en-IN',
                     { day: 'numeric', month: 'long', year: 'numeric' })}
                 </div>
-                <div style={{ fontSize: '0.9rem', color: '#d8ede6',
+                <div style={{ fontSize: '0.9rem', color: 'var(--text-citizen)',
                   marginBottom: '0.3rem', fontWeight: 500 }}>{h.outcome}</div>
                 {h.delay_reason && h.delay_reason !== 'None' && (
                   <div style={{ fontSize: '0.78rem',
@@ -371,7 +370,7 @@ function PrisonerCard({ prisoner: p, isMobile }) {
                   UPCOMING — {new Date(nextHearing).toLocaleDateString('en-IN',
                     { day: 'numeric', month: 'long', year: 'numeric' })}
                 </div>
-                <div style={{ fontSize: '0.9rem', color: 'rgba(216,237,230,0.6)',
+                <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)',
                   fontStyle: 'italic' }}>{t('statusTracker.nextHearing')}</div>
               </div>
             )}
@@ -386,7 +385,7 @@ function PrisonerCard({ prisoner: p, isMobile }) {
         boxShadow: '0 4px 15px rgba(0,0,0,0.1)', transition: 'transform 0.3s' }}
         onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
         onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
-        <div style={{ fontSize: '0.85rem', color: 'rgba(216,237,230,0.6)' }}>
+        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
           Need a lawyer? Call NALSA Legal Aid Helpline free
         </div>
         <div style={{ fontFamily: "'Cormorant Garamond',serif",

@@ -8,7 +8,7 @@ import { caseAPI, aiAPI } from '../../services/api';
 
 /* ── Constants ───────────────────────────────────────────────────────── */
 const C = {
-  bg: '#08120f', text: '#d8ede6', sub: 'rgba(216,237,230,0.45)',
+  bg: 'var(--bg-citizen)', text: 'var(--text-citizen)', sub: 'var(--text-muted)',
   green: '#1d9e75', greenLight: '#2ed89c',
   blue: '#3b82f6',
   cardBg: 'rgba(29,158,117,0.05)', cardBorder: 'rgba(29,158,117,0.12)',
@@ -352,10 +352,10 @@ function InfoCard({ label, value, icon }) {
       borderRadius: 10, padding: '0.9rem 1rem',
     }}>
       <div style={{ fontSize: '1rem', marginBottom: 4 }}>{icon}</div>
-      <div style={{ fontSize: '0.88rem', fontWeight: 500, color: '#d8ede6' }}>{value}</div>
+      <div style={{ fontSize: '0.88rem', fontWeight: 500, color: 'var(--text-citizen)' }}>{value}</div>
       <div style={{
         fontSize: '0.65rem', letterSpacing: 1, textTransform: 'uppercase',
-        color: 'rgba(216,237,230,0.4)', marginTop: 2,
+        color: 'var(--text-muted)', marginTop: 2,
       }}>{label}</div>
     </div>
   );

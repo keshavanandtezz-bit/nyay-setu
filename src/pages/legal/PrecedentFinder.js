@@ -5,7 +5,6 @@ import PageWrapper from '../../components/PageWrapper';
 import { searchPrecedents } from '../../data/precedents';
 
 const GOLD = '#d4a843';
-const BG = '#0d0c08';
 
 const IPC_OPTIONS = [
   '', 'IPC 302', 'IPC 304A', 'IPC 323', 'IPC 325', 'IPC 379', 'IPC 392',
@@ -53,7 +52,7 @@ export default function PrecedentFinder() {
   ];
 
   return (
-    <PageWrapper style={{ background: BG, color: '#e8e0cc' }}>
+    <PageWrapper style={{ background: 'var(--bg-legal)', color: 'var(--text-legal)' }}>
       <Navbar theme="legal" showBack={true} />
 
       <div style={{ maxWidth: 900, margin: '0 auto',
@@ -74,7 +73,7 @@ export default function PrecedentFinder() {
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
           }}>{t('legal.precedentFinder')}</h1>
-          <p style={{ fontSize: '0.82rem', color: 'rgba(232,224,204,0.4)', fontWeight: 300 }}>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontWeight: 300 }}>
             {t('legal.precedentFinderDesc')}
           </p>
         </div>
@@ -94,7 +93,7 @@ export default function PrecedentFinder() {
             style={{ flex: 1, background: 'rgba(212,168,67,0.04)',
               border: `1px solid ${inputFocused ? 'rgba(212,168,67,0.45)' : 'rgba(212,168,67,0.18)'}`,
               borderRadius: 10,
-              padding: '0.85rem 1.2rem', color: '#e8e0cc', outline: 'none',
+              padding: '0.85rem 1.2rem', color: 'var(--text-legal)', outline: 'none',
               fontSize: '0.9rem', fontFamily: "'Outfit',sans-serif",
               transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
               boxShadow: inputFocused ? `0 0 16px rgba(212,168,67,0.12)` : 'none',
@@ -106,7 +105,7 @@ export default function PrecedentFinder() {
               onChange={e => setIpcSection(e.target.value)}
               style={{ padding: '0.85rem 1rem', background: 'rgba(212,168,67,0.04)',
                 border: '1px solid rgba(212,168,67,0.18)', borderRadius: 10,
-                color: ipcSection ? '#e8e0cc' : 'rgba(232,224,204,0.35)',
+                color: ipcSection ? 'var(--text-legal)' : 'var(--text-muted)',
                 fontSize: '0.85rem', fontFamily: "'Outfit',sans-serif",
                 outline: 'none', cursor: 'pointer',
                 minWidth: isMobile ? 0 : 140, flex: isMobile ? 1 : 'none',
@@ -135,7 +134,7 @@ export default function PrecedentFinder() {
         {!searched && (
           <div className="reveal-on-scroll" style={{ marginBottom: '2rem' }}>
             <div style={{ fontSize: '0.7rem', letterSpacing: 1.5,
-              textTransform: 'uppercase', color: 'rgba(232,224,204,0.3)',
+              textTransform: 'uppercase', color: 'var(--text-dim)',
               marginBottom: '0.6rem' }}>Popular Searches</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               {popularSearches.map((s, i) => (
@@ -156,7 +155,7 @@ export default function PrecedentFinder() {
                       : 'rgba(212,168,67,0.06)',
                     border: `1px solid ${hoveredChip === i ? 'rgba(212,168,67,0.35)' : 'rgba(212,168,67,0.15)'}`,
                     borderRadius: 20,
-                    color: hoveredChip === i ? '#e8e0cc' : 'rgba(232,224,204,0.55)',
+                    color: hoveredChip === i ? 'var(--text-legal)' : 'var(--text-muted)',
                     fontSize: '0.78rem',
                     cursor: 'pointer', fontFamily: "'Outfit',sans-serif",
                     transition: 'all 0.3s ease',
@@ -174,7 +173,7 @@ export default function PrecedentFinder() {
         {/* Results */}
         {searched && (
           <div className="reveal-on-scroll">
-            <div style={{ fontSize: '0.78rem', color: 'rgba(232,224,204,0.35)',
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)',
               marginBottom: '1rem' }}>
               {results.length > 0
                 ? `Found ${results.length} relevant judgment${results.length > 1 ? 's' : ''}`
@@ -189,8 +188,8 @@ export default function PrecedentFinder() {
                   onMouseLeave={() => setHoveredCard(null)}
                   style={{
                     background: hoveredCard === i
-                      ? 'rgba(255,255,255,0.04)'
-                      : 'rgba(255,255,255,0.02)',
+                      ? 'var(--bg-card-hover)'
+                      : 'var(--bg-card)',
                     border: `1px solid ${expanded === i
                       ? 'rgba(212,168,67,0.3)'
                       : hoveredCard === i
@@ -217,7 +216,7 @@ export default function PrecedentFinder() {
                       <div style={{ display: 'flex', alignItems: 'center',
                         gap: '0.6rem', marginBottom: '0.4rem' }}>
                         <div style={{ fontFamily: "'Cormorant Garamond',serif",
-                          fontSize: isMobile ? '1rem' : '1.1rem', fontWeight: 600, color: '#e8e0cc' }}>
+                          fontSize: isMobile ? '1rem' : '1.1rem', fontWeight: 600, color: 'var(--text-legal)' }}>
                           {p.title}
                         </div>
                       </div>
@@ -226,7 +225,7 @@ export default function PrecedentFinder() {
                           {p.citation}
                         </span>
                         <span style={{ fontSize: '0.72rem',
-                          color: 'rgba(232,224,204,0.35)' }}>
+                          color: 'var(--text-muted)' }}>
                           {p.court} · {p.year}
                         </span>
                       </div>
@@ -285,7 +284,7 @@ export default function PrecedentFinder() {
                         <div style={{ fontSize: '0.65rem', letterSpacing: 1.5,
                           textTransform: 'uppercase', color: 'rgba(212,168,67,0.5)',
                           marginBottom: '0.5rem' }}>Summary</div>
-                        <p style={{ fontSize: '0.85rem', color: 'rgba(232,224,204,0.65)',
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)',
                           lineHeight: 1.7, marginBottom: '1rem' }}>{p.summary}</p>
 
                         <div style={{ padding: '0.9rem 1.2rem',
@@ -295,7 +294,7 @@ export default function PrecedentFinder() {
                           <div style={{ fontSize: '0.65rem', letterSpacing: 1.5,
                             textTransform: 'uppercase', color: 'rgba(212,168,67,0.5)',
                             marginBottom: '0.4rem' }}>Key Legal Principle</div>
-                          <p style={{ fontSize: '0.85rem', color: '#e8e0cc',
+                          <p style={{ fontSize: '0.85rem', color: 'var(--text-legal)',
                             lineHeight: 1.6, fontStyle: 'italic' }}>
                             "{p.key_principle}"
                           </p>
@@ -331,11 +330,11 @@ export default function PrecedentFinder() {
 
             {results.length === 0 && (
               <div className="glass-card" style={{ padding: '3rem', textAlign: 'center',
-                background: 'rgba(255,255,255,0.02)',
+                background: 'var(--bg-card)',
                 border: '1px solid rgba(212,168,67,0.08)', borderRadius: 12 }}>
                 <div style={{ fontSize: '2rem', marginBottom: '0.8rem' }}>📚</div>
-                <div style={{ color: '#e8e0cc', marginBottom: '0.4rem' }}>{t('common.noResults')}</div>
-                <div style={{ fontSize: '0.8rem', color: 'rgba(232,224,204,0.35)' }}>
+                <div style={{ color: 'var(--text-legal)', marginBottom: '0.4rem' }}>{t('common.noResults')}</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                   Try different keywords or select a specific IPC section
                 </div>
               </div>

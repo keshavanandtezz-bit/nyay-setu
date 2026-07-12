@@ -51,7 +51,7 @@ export default function CourtCalendar() {
   const hearingPassed = daysLeft < 0;
 
   return (
-    <PageWrapper style={{ minHeight: '100vh', background: '#08120f', color: '#d8ede6' }}>
+    <PageWrapper style={{ minHeight: '100vh', background: 'var(--bg-citizen)', color: 'var(--text-citizen)' }}>
       <Navbar theme="green" showBack={true} />
 
       <div style={{ maxWidth: 800, margin: '0 auto', padding: isMobile ? '1.5rem 1rem' : '2rem 2.5rem' }}>
@@ -72,7 +72,7 @@ export default function CourtCalendar() {
             backgroundClip: 'text',
             animation: 'rotateGradient 6s ease infinite',
           }}>{t('courtCalendar.title')}</h1>
-          <p style={{ fontSize: '0.85rem', color: 'rgba(216,237,230,0.45)', fontWeight: 300,
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 300,
             marginBottom: '2rem' }}>
             {t('courtCalendar.enterPrisonerId')}
           </p>
@@ -97,7 +97,7 @@ export default function CourtCalendar() {
             onBlur={() => setSearchFocused(false)}
             placeholder={t('courtCalendar.enterPrisonerId')}
             style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none',
-              padding: '0.9rem 1.2rem', fontSize: isMobile ? '0.82rem' : '0.9rem', color: '#d8ede6',
+              padding: '0.9rem 1.2rem', fontSize: isMobile ? '0.82rem' : '0.9rem', color: 'var(--text-citizen)',
               fontFamily: "'Outfit',sans-serif" }}
           />
           <button onClick={handleSearch}
@@ -110,7 +110,7 @@ export default function CourtCalendar() {
             onMouseLeave={e => e.currentTarget.style.background = TEAL}
           >{t('common.search')}</button>
         </div>
-        <div style={{ fontSize: '0.72rem', color: 'rgba(216,237,230,0.25)',
+        <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)',
           marginBottom: '1.5rem' }}>
           Try: SC/BLR/2024/1182 · JMFC/MYS/2023/887 · SC/TUK/2023/445
         </div>
@@ -121,8 +121,8 @@ export default function CourtCalendar() {
             border: '1px solid rgba(29,158,117,0.1)', borderRadius: 12,
             animation: 'fadeInUp 0.4s ease forwards' }}>
             <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📋</div>
-            <div style={{ color: '#d8ede6', marginBottom: '0.4rem' }}>{t('common.noResults')}</div>
-            <div style={{ fontSize: '0.8rem', color: 'rgba(216,237,230,0.4)' }}>
+            <div style={{ color: 'var(--text-citizen)', marginBottom: '0.4rem' }}>{t('common.noResults')}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
               Check the case number and try again, or contact your nearest court registry.
             </div>
           </div>
@@ -144,13 +144,13 @@ export default function CourtCalendar() {
             }}>
               <div>
                 <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '1.2rem',
-                  fontWeight: 700, color: '#d8ede6', marginBottom: '0.3rem' }}>
+                  fontWeight: 700, color: 'var(--text-citizen)', marginBottom: '0.3rem' }}>
                   {result.prisoner_name}
                 </div>
-                <div style={{ fontSize: '0.78rem', color: 'rgba(216,237,230,0.45)' }}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                   {result.case_number} · {result.court}
                 </div>
-                <div style={{ fontSize: '0.78rem', color: 'rgba(216,237,230,0.35)', marginTop: 4 }}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginTop: 4 }}>
                   {result.charges}
                 </div>
               </div>
@@ -189,18 +189,18 @@ export default function CourtCalendar() {
                     }}>
                       {daysLeft}
                     </div>
-                    <div style={{ fontSize: '0.7rem', color: 'rgba(216,237,230,0.3)' }}>days</div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>days</div>
                   </>
                 )}
               </div>
             </div>
 
             {/* Timeline section */}
-            <div className="reveal-on-scroll" style={{ background: 'rgba(255,255,255,0.02)',
+            <div className="reveal-on-scroll" style={{ background: 'var(--bg-card)',
               border: '1px solid rgba(29,158,117,0.1)', borderRadius: 12,
               padding: isMobile ? '1.2rem' : '1.5rem 1.8rem', marginBottom: '1.5rem' }}>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '1.1rem',
-                fontWeight: 600, color: '#d8ede6', marginBottom: '1.5rem' }}>{t('statusTracker.hearingHistory')}</div>
+                fontWeight: 600, color: 'var(--text-citizen)', marginBottom: '1.5rem' }}>{t('statusTracker.hearingHistory')}</div>
               <div className="stagger-children" style={{ position: 'relative', paddingLeft: '1.5rem' }}>
                 <div style={{ position: 'absolute', left: 6, top: 0, bottom: 0,
                   width: 1, background: 'linear-gradient(to bottom, rgba(29,158,117,0.3), rgba(29,158,117,0.05))' }} />
@@ -223,19 +223,19 @@ export default function CourtCalendar() {
                         position: 'absolute', left: '-1.5rem', top: 11,
                         width: 13, height: 13, borderRadius: '50%', zIndex: 1,
                         background: isUpcoming ? 'transparent' : '#1d9e75',
-                        border: isUpcoming ? '2px solid #d4a843' : '2px solid #08120f',
+                        border: isUpcoming ? '2px solid #d4a843' : '2px solid var(--bg-citizen)',
                         boxShadow: isUpcoming ? '0 0 8px rgba(212,168,67,0.4)' : 'none',
                         transition: 'box-shadow 0.3s ease',
                       }} />
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
                         <span style={{ fontSize: '0.72rem',
-                          color: isUpcoming ? '#d4a843' : 'rgba(216,237,230,0.35)',
+                          color: isUpcoming ? '#d4a843' : 'var(--text-muted)',
                           letterSpacing: '0.5px' }}>
                           {isUpcoming ? '⬡ UPCOMING — ' : ''}{formatDate(item.date)}
                         </span>
                       </div>
                       <div style={{ fontSize: '0.85rem',
-                        color: isUpcoming ? 'rgba(216,237,230,0.6)' : '#d8ede6',
+                        color: isUpcoming ? 'var(--text-muted)' : 'var(--text-citizen)',
                         fontStyle: isUpcoming ? 'italic' : 'normal',
                         marginBottom: '0.2rem' }}>{item.label}</div>
                       {item.delay && item.delay !== 'None' && (
@@ -269,7 +269,7 @@ export default function CourtCalendar() {
                 cursor: 'default',
               }}>
               <span style={{ fontSize: '1.2rem' }}>ℹ️</span>
-              <div style={{ fontSize: '0.82rem', color: 'rgba(216,237,230,0.55)' }}>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                 SMS alerts for hearing updates will be available soon.
                 For now, bookmark this page and check back before your hearing date.
               </div>

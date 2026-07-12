@@ -7,9 +7,9 @@ import { caseAPI } from '../../services/api';
 
 /* ── Constants ───────────────────────────────────────────────────────── */
 const C = {
-  bg: '#08120f',
-  text: '#d8ede6',
-  sub: 'rgba(216,237,230,0.45)',
+  bg: 'var(--bg-citizen)',
+  text: 'var(--text-citizen)',
+  sub: 'var(--text-muted)',
   green: '#1d9e75',
   greenLight: '#2ed89c',
   greenGlow: 'rgba(29,158,117,0.35)',

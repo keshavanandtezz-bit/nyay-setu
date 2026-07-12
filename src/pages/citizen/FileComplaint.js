@@ -8,7 +8,7 @@ import { caseAPI, aiAPI } from '../../services/api';
 
 /* ── Constants ───────────────────────────────────────────────────────── */
 const C = {
-  bg: '#08120f', text: '#d8ede6', sub: 'rgba(216,237,230,0.45)',
+  bg: 'var(--bg-citizen)', text: 'var(--text-citizen)', sub: 'var(--text-muted)',
   green: '#1d9e75', greenLight: '#2ed89c',
   cardBg: 'rgba(29,158,117,0.05)', cardBorder: 'rgba(29,158,117,0.12)',
   inputBg: 'rgba(29,158,117,0.06)', inputBorder: 'rgba(29,158,117,0.2)',
@@ -27,9 +27,9 @@ const DISTRICTS = [
 
 /* ── Shared input style ──────────────────────────────────────────────── */
 const inputStyle = {
-  width: '100%', boxSizing: 'border-box', background: C.inputBg,
+  width: '100%', boxSizing: 'border-box', background: 'var(--bg-input)',
   border: `1px solid ${C.inputBorder}`, borderRadius: 8, outline: 'none',
-  padding: '0.8rem 1rem', fontSize: '0.88rem', color: C.text,
+  padding: '0.8rem 1rem', fontSize: '0.88rem', color: 'var(--text-citizen)',
   fontFamily: "'Outfit',sans-serif",
 };
 const selectStyle = { ...inputStyle, appearance: 'none', cursor: 'pointer' };
@@ -157,7 +157,7 @@ export default function FileComplaint() {
   /* ── Render helpers ────────────────────────────────────────────────── */
   function renderIPC() {
     if (ipcLoading) return (
-      <div style={{ ...aiCardStyle, color: C.sub }}>🤖 {t('fileComplaint.aiSuggesting')}</div>
+      <div style={{ ...aiCardStyle, color: 'var(--text-muted)' }}>🤖 {t('fileComplaint.aiSuggesting')}</div>
     );
     if (!ipcSuggestions) return null;
     const sections = ipcSuggestions?.sections || ipcSuggestions?.suggested_sections || [];
@@ -169,13 +169,13 @@ export default function FileComplaint() {
         {sections.length > 0 ? sections.map((s, i) => (
           <div key={i} style={{
             background: 'rgba(29,158,117,0.08)', borderRadius: 6,
-            padding: '0.5rem 0.8rem', marginBottom: 6, fontSize: '0.82rem', color: C.text,
+            padding: '0.5rem 0.8rem', marginBottom: 6, fontSize: '0.82rem', color: 'var(--text-citizen)',
           }}>
             <strong style={{ color: C.greenLight }}>Section {s.section || s}:</strong>{' '}
             {s.description || s.title || ''}
           </div>
         )) : (
-          <div style={{ fontSize: '0.82rem', color: C.sub }}>
+          <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
             {ipcSuggestions?.summary || 'No specific sections identified. A legal expert will review.'}
           </div>
         )}
@@ -191,7 +191,7 @@ export default function FileComplaint() {
   /* ── Success screen ────────────────────────────────────────────────── */
   if (submitResult) {
     return (
-      <PageWrapper style={{ minHeight: '100vh', background: C.bg, color: C.text }}>
+      <PageWrapper style={{ minHeight: '100vh', background: 'var(--bg-citizen)', color: 'var(--text-citizen)' }}>
         <Navbar theme="green" showBack={true} />
         <div style={{ maxWidth: 560, margin: '3rem auto', textAlign: 'center', padding: '0 2rem' }}>
           <div style={{
@@ -202,9 +202,9 @@ export default function FileComplaint() {
           }}>✅</div>
           <h2 style={{
             fontFamily: "'Cormorant Garamond',serif", fontSize: '2rem',
-            fontWeight: 700, color: C.text, margin: '0 0 0.5rem',
+            fontWeight: 700, color: 'var(--text-citizen)', margin: '0 0 0.5rem',
           }}>{t('fileComplaint.successTitle')}</h2>
-          <p style={{ fontSize: '0.88rem', color: C.sub, marginBottom: '1.5rem' }}>
+          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
             {t('fileComplaint.successMsg')}
           </p>
           <div style={{
@@ -236,7 +236,7 @@ export default function FileComplaint() {
             style={{
               padding: '0.85rem 2rem', background: 'transparent',
               border: `1px solid ${C.cardBorder}`, borderRadius: 8,
-              color: C.text, fontSize: '0.9rem', cursor: 'pointer',
+              color: 'var(--text-citizen)', fontSize: '0.9rem', cursor: 'pointer',
               fontFamily: "'Outfit',sans-serif",
             }}
           >Back to Portal</button>
@@ -247,7 +247,7 @@ export default function FileComplaint() {
 
   /* ── Main form ─────────────────────────────────────────────────────── */
   return (
-    <PageWrapper style={{ minHeight: '100vh', background: C.bg, color: C.text }}>
+    <PageWrapper style={{ minHeight: '100vh', background: 'var(--bg-citizen)', color: 'var(--text-citizen)' }}>
       <Navbar theme="green" showBack={true} />
 
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '2rem 2rem 3rem' }}>
@@ -259,7 +259,7 @@ export default function FileComplaint() {
           }}>{t('fileComplaint.title')}</div>
           <h1 style={{
             fontFamily: "'Cormorant Garamond',serif", fontSize: '2rem',
-            fontWeight: 700, color: C.text, margin: 0,
+            fontWeight: 700, color: 'var(--text-citizen)', margin: 0,
           }}>Guided Complaint Filing</h1>
         </div>
 
@@ -296,7 +296,7 @@ export default function FileComplaint() {
                   rows={5}
                   style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
                 />
-                <div style={{ fontSize: '0.7rem', color: C.sub, marginTop: 4 }}>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4 }}>
                   {form.description.length} characters
                 </div>
               </div>
@@ -406,14 +406,14 @@ export default function FileComplaint() {
 
               {/* AI summary */}
               {aiSummaryLoading && (
-                <div style={{ ...aiCardStyle, color: C.sub }}>🤖 {t('fileComplaint.aiSuggesting')}</div>
+                <div style={{ ...aiCardStyle, color: 'var(--text-muted)' }}>🤖 {t('fileComplaint.aiSuggesting')}</div>
               )}
               {aiSummary && (
                 <div style={aiCardStyle}>
                   <div style={{ fontSize: '0.75rem', letterSpacing: 1, textTransform: 'uppercase', color: C.green, marginBottom: 8 }}>
                     🤖 AI Legal Summary
                   </div>
-                  <div style={{ fontSize: '0.85rem', color: C.text, lineHeight: 1.7 }}>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-citizen)', lineHeight: 1.7 }}>
                     {aiSummary.summary || aiSummary.legal_summary || JSON.stringify(aiSummary)}
                   </div>
                 </div>
@@ -458,7 +458,7 @@ export default function FileComplaint() {
                   <div style={{ fontSize: '0.75rem', letterSpacing: 1, textTransform: 'uppercase', color: C.green, marginBottom: 8 }}>
                     🤖 AI Legal Summary
                   </div>
-                  <div style={{ fontSize: '0.85rem', color: C.text, lineHeight: 1.7 }}>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-citizen)', lineHeight: 1.7 }}>
                     {aiSummary.summary || aiSummary.legal_summary || JSON.stringify(aiSummary)}
                   </div>
                 </div>
@@ -523,7 +523,7 @@ export default function FileComplaint() {
 /* ── Small helpers ───────────────────────────────────────────────────── */
 const stepHeading = {
   fontFamily: "'Cormorant Garamond',serif", fontSize: '1.35rem',
-  fontWeight: 700, color: '#d8ede6', margin: '0 0 1.2rem',
+  fontWeight: 700, color: 'var(--text-citizen)', margin: '0 0 1.2rem',
 };
 
 const btnPrimary = {
@@ -535,7 +535,7 @@ const btnPrimary = {
 const btnSecondary = {
   padding: '0.8rem 1.8rem', background: 'transparent',
   border: '1px solid rgba(29,158,117,0.2)', borderRadius: 8,
-  color: '#d8ede6', fontSize: '0.88rem', fontFamily: "'Outfit',sans-serif",
+  color: 'var(--text-citizen)', fontSize: '0.88rem', fontFamily: "'Outfit',sans-serif",
   cursor: 'pointer', transition: 'all 0.2s',
 };
 
@@ -543,8 +543,8 @@ function SummaryRow({ label, value }) {
   if (!value) return null;
   return (
     <div style={{ display: 'flex', gap: 8, marginBottom: 5, fontSize: '0.82rem' }}>
-      <span style={{ color: 'rgba(216,237,230,0.5)', minWidth: 90, flexShrink: 0 }}>{label}:</span>
-      <span style={{ color: '#d8ede6', lineHeight: 1.5 }}>{value}</span>
+      <span style={{ color: 'var(--text-muted)', minWidth: 90, flexShrink: 0 }}>{label}:</span>
+      <span style={{ color: 'var(--text-citizen)', lineHeight: 1.5 }}>{value}</span>
     </div>
   );
 }

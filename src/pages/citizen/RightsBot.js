@@ -5,7 +5,6 @@ import PageWrapper from '../../components/PageWrapper';
 import { aiAPI } from '../../services/api';
 
 const TEAL = '#1d9e75';
-const G = '#08120f';
 
 const SUGGESTED = [
   "What are my rights if I am arrested?",
@@ -80,7 +79,7 @@ export default function RightsBot() {
   }
 
   return (
-    <PageWrapper style={{ minHeight: '100vh', background: G, color: '#d8ede6',
+    <PageWrapper style={{ minHeight: '100vh', background: 'var(--bg-citizen)', color: 'var(--text-citizen)',
       display: 'flex', flexDirection: 'column' }}>
       <Navbar theme="green" showBack={true} />
 
@@ -92,10 +91,10 @@ export default function RightsBot() {
             textTransform: 'uppercase', color: 'rgba(29,158,117,0.7)',
             marginBottom: '0.4rem' }}>{t('rightsBot.subtitle')}</div>
           <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '2.2rem',
-            fontWeight: 700, color: '#d8ede6', background: 'linear-gradient(90deg, #d8ede6, #1d9e75)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            fontWeight: 700, color: 'var(--text-citizen)', background: 'linear-gradient(90deg, #d8ede6, #1d9e75)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             {t('rightsBot.title')}
           </h1>
-          <p style={{ fontSize: '0.85rem', color: 'rgba(216,237,230,0.5)',
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)',
             fontWeight: 300, marginTop: '0.4rem' }}>
             {t('citizen.knowYourRightsDesc')}
           </p>
@@ -138,7 +137,7 @@ export default function RightsBot() {
               onMouseEnter={e => {
                 if(!loading) {
                   e.target.style.background = 'rgba(29,158,117,0.15)';
-                  e.target.style.color = '#d8ede6';
+                  e.target.style.color = 'var(--text-citizen)';
                   e.target.style.transform = 'translateY(-2px)';
                 }
               }}
@@ -178,11 +177,11 @@ export default function RightsBot() {
                 ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
               background: m.role === 'user'
                 ? 'linear-gradient(135deg, rgba(29,158,117,0.15), rgba(29,158,117,0.25))' 
-                : 'rgba(255,255,255,0.03)',
+                : 'var(--bg-card)',
               border: `1px solid ${m.role === 'user'
-                ? 'rgba(29,158,117,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                ? 'rgba(29,158,117,0.4)' : 'var(--border-card)'}`,
               fontSize: '0.9rem', lineHeight: 1.7,
-              color: '#d8ede6', whiteSpace: 'pre-wrap',
+              color: 'var(--text-citizen)', whiteSpace: 'pre-wrap',
               boxShadow: m.role === 'user' ? '0 4px 15px rgba(29,158,117,0.1)' : '0 4px 15px rgba(0,0,0,0.1)'
             }}>
               {m.text}
@@ -200,8 +199,8 @@ export default function RightsBot() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: '1rem', marginRight: 12, flexShrink: 0 }}>⚖️</div>
             <div style={{ padding: '1rem 1.4rem',
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-card)',
               borderRadius: '16px 16px 16px 4px',
               display: 'flex', gap: 6, alignItems: 'center', height: 44 }}>
               {[0, 1, 2].map(d => (
@@ -231,7 +230,7 @@ export default function RightsBot() {
             disabled={loading}
             style={{ flex: 1, background: 'transparent', border: 'none',
               outline: 'none', padding: '1.2rem 1.4rem',
-              fontSize: '0.95rem', color: '#d8ede6',
+              fontSize: '0.95rem', color: 'var(--text-citizen)',
               fontFamily: "'Outfit',sans-serif" }}
           />
           <button onClick={() => sendMessage()}
@@ -258,7 +257,7 @@ export default function RightsBot() {
             {loading ? t('rightsBot.thinking') : t('rightsBot.send')}
           </button>
         </div>
-        <div style={{ fontSize: '0.75rem', color: 'rgba(216,237,230,0.3)',
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)',
           marginTop: '0.8rem', textAlign: 'center' }}>
           General legal information only. For personal advice consult a lawyer.
           Free legal aid: 15100

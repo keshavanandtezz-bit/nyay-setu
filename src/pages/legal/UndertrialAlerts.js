@@ -7,7 +7,6 @@ import { undertrials, getDaysInCustody, getAlertStatus, getBailScore } from '../
 import { legalAPI } from '../../services/api';
 
 const GOLD = '#d4a843';
-const BG = '#0d0c08';
 
 // STATUS_CONFIG moved inside component
 
@@ -122,7 +121,7 @@ export default function UndertrialAlerts() {
     { day: 'numeric', month: 'short', year: 'numeric' });
 
   return (
-    <PageWrapper style={{ background: BG, color: '#e8e0cc' }}>
+    <PageWrapper style={{ background: 'var(--bg-legal)', color: 'var(--text-legal)' }}>
       <Navbar theme="legal" showBack={true} />
 
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: isMobile ? '1.5rem 1rem' : '2rem 2.5rem' }}>
@@ -142,10 +141,9 @@ export default function UndertrialAlerts() {
             backgroundClip: 'text',
             animation: 'rotateGradient 4s ease infinite',
           }}>
-          }}>
             {t('legal.undertrialAlerts')}
           </h1>
-          <p style={{ fontSize: '0.82rem', color: 'rgba(232,224,204,0.4)', fontWeight: 300 }}>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontWeight: 300 }}>
             {t('legal.undertrialAlertsDesc')}
           </p>
         </div>
@@ -209,7 +207,7 @@ export default function UndertrialAlerts() {
                   }}>
                     <CountUp end={s.value} />
                   </div>
-                  <div style={{ fontSize: '0.7rem', color: 'rgba(232,224,204,0.4)',
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)',
                     textTransform: 'uppercase', letterSpacing: 1 }}>{s.label}</div>
                 </div>
               ))}
@@ -232,7 +230,7 @@ export default function UndertrialAlerts() {
                       background: isActive ? 'rgba(212,168,67,0.15)' : 'transparent',
                       border: `1px solid ${isActive
                         ? 'rgba(212,168,67,0.4)' : 'rgba(212,168,67,0.1)'}`,
-                      color: isActive ? GOLD : 'rgba(232,224,204,0.45)' }}>
+                      color: isActive ? GOLD : 'var(--text-muted)' }}>
                     {labels[f]}
                   </button>
                 );
@@ -243,7 +241,7 @@ export default function UndertrialAlerts() {
                 style={{ padding: '0.45rem 1rem',
                   background: 'rgba(212,168,67,0.04)',
                   border: '1px solid rgba(212,168,67,0.12)', borderRadius: 8,
-                  color: districtFilter ? '#e8e0cc' : 'rgba(232,224,204,0.35)',
+                  color: districtFilter ? 'var(--text-legal)' : 'var(--text-muted)',
                   fontSize: '0.78rem', fontFamily: "'Outfit',sans-serif",
                   outline: 'none', cursor: 'pointer',
                   transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
@@ -258,7 +256,7 @@ export default function UndertrialAlerts() {
                 style={{ padding: '0.45rem 1rem',
                   background: 'rgba(212,168,67,0.04)',
                   border: '1px solid rgba(212,168,67,0.12)', borderRadius: 8,
-                  color: '#e8e0cc', fontSize: '0.78rem',
+                  color: 'var(--text-legal)', fontSize: '0.78rem',
                   fontFamily: "'Outfit',sans-serif",
                   outline: 'none', cursor: 'pointer', marginLeft: 'auto',
                   transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
@@ -269,7 +267,7 @@ export default function UndertrialAlerts() {
                 <option value="name" style={{ background: '#1a1408' }}>Name A–Z</option>
               </select>
 
-              <span style={{ fontSize: '0.75rem', color: 'rgba(232,224,204,0.3)' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
                 {filtered.length} result{filtered.length !== 1 ? 's' : ''}
               </span>
             </div>
@@ -281,7 +279,7 @@ export default function UndertrialAlerts() {
                 padding: '0.5rem 1.2rem', marginBottom: '0.4rem' }}>
                 {['Prisoner', 'District', t('statusTracker.daysInCustody'), t('statusTracker.status'), 'Bail Score', 'Action'].map((h, i) => (
                   <div key={i} style={{ fontSize: '0.62rem', letterSpacing: 1.5,
-                    textTransform: 'uppercase', color: 'rgba(232,224,204,0.3)',
+                    textTransform: 'uppercase', color: 'var(--text-dim)',
                     textAlign: i > 1 ? 'center' : 'left' }}>{h}</div>
                 ))}
               </div>
@@ -302,7 +300,7 @@ export default function UndertrialAlerts() {
                     border: `1px solid ${isExpanded ? sc.border : isHovered ? 'rgba(212,168,67,0.15)' : 'rgba(212,168,67,0.08)'}`,
                     borderRadius: 10, overflow: 'hidden',
                     transition: 'all 0.3s ease',
-                    background: isExpanded ? 'rgba(255,255,255,0.015)' : 'transparent',
+                    background: isExpanded ? 'var(--bg-card)' : 'transparent',
                   }}>
 
                     {/* --- Desktop row --- */}
@@ -313,19 +311,19 @@ export default function UndertrialAlerts() {
                         style={{ display: 'grid',
                           gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr',
                           padding: '0.85rem 1.2rem', cursor: 'pointer',
-                          background: isExpanded || isHovered ? 'rgba(255,255,255,0.02)' : 'transparent',
+                          background: isExpanded || isHovered ? 'var(--bg-card)' : 'transparent',
                           transition: 'background 0.25s ease' }}>
 
                         <div>
                           <div style={{ fontSize: '0.88rem', fontWeight: 500,
-                            color: '#e8e0cc', marginBottom: 2 }}>{u.name}</div>
+                            color: 'var(--text-legal)', marginBottom: 2 }}>{u.name}</div>
                           <div style={{ fontSize: '0.7rem',
-                            color: 'rgba(232,224,204,0.35)' }}>{u.prisoner_id}</div>
+                            color: 'var(--text-muted)' }}>{u.prisoner_id}</div>
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <span style={{ fontSize: '0.78rem',
-                            color: 'rgba(232,224,204,0.5)' }}>{u.district}</span>
+                            color: 'var(--text-muted)' }}>{u.district}</span>
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center',
@@ -356,7 +354,7 @@ export default function UndertrialAlerts() {
                             {bailScore}/100
                           </div>
                           <div style={{ width: 60, height: 4,
-                            background: 'rgba(255,255,255,0.08)',
+                            background: 'var(--border-card)',
                             borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
                             <div style={{ height: '100%', borderRadius: 2,
                               width: `${bailScore}%`,
@@ -389,13 +387,13 @@ export default function UndertrialAlerts() {
                       /* --- Mobile card layout --- */
                       <div onClick={() => setExpanded(isExpanded ? null : u.id)}
                         style={{ padding: '1rem', cursor: 'pointer',
-                          background: isExpanded ? 'rgba(255,255,255,0.02)' : 'transparent',
+                          background: isExpanded ? 'var(--bg-card)' : 'transparent',
                           transition: 'background 0.25s ease' }}>
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.6rem' }}>
                           <div>
-                            <div style={{ fontSize: '0.92rem', fontWeight: 500, color: '#e8e0cc' }}>{u.name}</div>
-                            <div style={{ fontSize: '0.68rem', color: 'rgba(232,224,204,0.35)', marginTop: 2 }}>{u.prisoner_id} · {u.district}</div>
+                            <div style={{ fontSize: '0.92rem', fontWeight: 500, color: 'var(--text-legal)' }}>{u.name}</div>
+                            <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: 2 }}>{u.prisoner_id} · {u.district}</div>
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 5,
                             padding: '3px 10px', borderRadius: 20,
@@ -407,17 +405,17 @@ export default function UndertrialAlerts() {
 
                         <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center' }}>
                           <div>
-                            <div style={{ fontSize: '0.58rem', textTransform: 'uppercase', letterSpacing: 1.2, color: 'rgba(232,224,204,0.3)', marginBottom: 2 }}>Days</div>
+                            <div style={{ fontSize: '0.58rem', textTransform: 'uppercase', letterSpacing: 1.2, color: 'var(--text-dim)', marginBottom: 2 }}>Days</div>
                             <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '1.4rem', fontWeight: 600, color: sc.text }}>{days}</div>
                           </div>
                           <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: '0.58rem', textTransform: 'uppercase', letterSpacing: 1.2, color: 'rgba(232,224,204,0.3)', marginBottom: 2 }}>Bail Score</div>
+                            <div style={{ fontSize: '0.58rem', textTransform: 'uppercase', letterSpacing: 1.2, color: 'var(--text-dim)', marginBottom: 2 }}>Bail Score</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                               <div style={{ fontSize: '0.88rem', fontWeight: 500,
                                 color: bailScore >= 60 ? '#1d9e75' : bailScore >= 40 ? '#ef9f27' : '#e24b4a' }}>
                                 {bailScore}/100
                               </div>
-                              <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,0.08)', borderRadius: 2, overflow: 'hidden' }}>
+                              <div style={{ flex: 1, height: 4, background: 'var(--border-card)', borderRadius: 2, overflow: 'hidden' }}>
                                 <div style={{ height: '100%', borderRadius: 2, width: `${bailScore}%`, transition: 'width 0.8s ease',
                                   background: bailScore >= 60 ? '#1d9e75' : bailScore >= 40 ? '#ef9f27' : '#e24b4a' }} />
                               </div>
@@ -441,7 +439,7 @@ export default function UndertrialAlerts() {
                     {isExpanded && (
                       <div style={{ padding: '0 1.2rem 1.2rem',
                         borderTop: `1px solid ${sc.border}`,
-                        background: 'rgba(255,255,255,0.01)',
+                        background: 'var(--bg-card)',
                         animation: 'fadeInUp 0.35s ease-out forwards',
                       }}>
                         <div className="stagger-children" style={{ display: 'grid',
@@ -461,11 +459,11 @@ export default function UndertrialAlerts() {
                             <div key={idx}>
                               <div style={{ fontSize: '0.6rem', letterSpacing: 1.5,
                                 textTransform: 'uppercase',
-                                color: 'rgba(232,224,204,0.3)', marginBottom: 3 }}>
+                                color: 'var(--text-dim)', marginBottom: 3 }}>
                                 {item.label}
                               </div>
                               <div style={{ fontSize: '0.8rem',
-                                color: item.warn ? '#f09595' : 'rgba(232,224,204,0.7)',
+                                color: item.warn ? '#f09595' : 'var(--text-muted)',
                                 lineHeight: 1.4 }}>{item.value}</div>
                             </div>
                           ))}
@@ -489,7 +487,7 @@ export default function UndertrialAlerts() {
                             {t('legal.bailGenerator')}
                           </button>
                           <div style={{ fontSize: '0.75rem',
-                            color: 'rgba(232,224,204,0.3)',
+                            color: 'var(--text-dim)',
                             display: 'flex', alignItems: 'center' }}>
                             Score: {bailScore}/100 —
                             {bailScore >= 60 ? ' Recommended to grant bail'
@@ -506,10 +504,10 @@ export default function UndertrialAlerts() {
 
             {filtered.length === 0 && (
               <div className="reveal-on-scroll" style={{ padding: '3rem', textAlign: 'center',
-                background: 'rgba(255,255,255,0.02)',
+                background: 'var(--bg-card)',
                 border: '1px solid rgba(212,168,67,0.08)', borderRadius: 12 }}>
                 <div style={{ fontSize: '2rem', marginBottom: '0.8rem' }}>✅</div>
-                <div style={{ color: '#e8e0cc' }}>{t('common.noResults')}</div>
+                <div style={{ color: 'var(--text-legal)' }}>{t('common.noResults')}</div>
               </div>
             )}
           </>

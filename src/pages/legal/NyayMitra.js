@@ -5,7 +5,6 @@ import PageWrapper from '../../components/PageWrapper';
 import { aiAPI } from '../../services/api';
 
 const GOLD = '#d4a843';
-const BG = '#0d0c08';
 
 const SAMPLE_CASE_TEXT = `IN THE COURT OF SESSIONS JUDGE, BENGALURU URBAN DISTRICT
 Sessions Case No. SC/BLR/2023/4521
@@ -109,13 +108,13 @@ export default function NyayMitra() {
   }
 
   const cardStyle = {
-    background: 'rgba(255,255,255,0.02)',
+    background: 'var(--bg-card)',
     border: '1px solid rgba(212,168,67,0.1)',
     borderRadius: 12,
   };
 
   return (
-    <PageWrapper style={{ minHeight: '100vh', background: BG, color: '#e8e0cc' }}>
+    <PageWrapper style={{ minHeight: '100vh', background: 'var(--bg-legal)', color: 'var(--text-legal)' }}>
       <Navbar theme="legal" showBack={true} />
 
       <div style={{ maxWidth: 920, margin: '0 auto', padding: '2rem 2.5rem' }}>
@@ -126,8 +125,8 @@ export default function NyayMitra() {
             <div style={{ fontSize: '0.72rem', letterSpacing: 2, textTransform: 'uppercase',
               color: 'rgba(212,168,67,0.6)', marginBottom: '0.4rem' }}>AI Case Intelligence</div>
             <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '2.2rem',
-              fontWeight: 700, color: '#e8e0cc', marginBottom: '0.3rem' }}>{t('legal.nyayMitra')}</h1>
-            <p style={{ fontSize: '0.82rem', color: 'rgba(232,224,204,0.4)', fontWeight: 300 }}>
+              fontWeight: 700, color: 'var(--text-legal)', marginBottom: '0.3rem' }}>{t('legal.nyayMitra')}</h1>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontWeight: 300 }}>
               {t('legal.nyayMitraDesc')}
             </p>
           </div>
@@ -169,9 +168,9 @@ export default function NyayMitra() {
                 style={{ display: 'none' }}
                 onChange={e => e.target.files[0] && processFile(e.target.files[0])} />
               <div style={{ fontSize: '2.5rem', marginBottom: '0.8rem' }}>📄</div>
-              <div style={{ fontSize: '1rem', color: '#e8e0cc', fontWeight: 500,
+              <div style={{ fontSize: '1rem', color: 'var(--text-legal)', fontWeight: 500,
                 marginBottom: '0.4rem' }}>Drop case PDF here</div>
-              <div style={{ fontSize: '0.82rem', color: 'rgba(232,224,204,0.35)',
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)',
                 marginBottom: '1rem' }}>or click to browse — chargesheets, FIRs, court orders</div>
               <div style={{ display: 'inline-block', padding: '0.6rem 1.5rem',
                 background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.25)',
@@ -181,9 +180,9 @@ export default function NyayMitra() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.05)' }} />
-              <span style={{ fontSize: '0.75rem', color: 'rgba(232,224,204,0.3)' }}>or</span>
-              <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.05)' }} />
+              <div style={{ flex: 1, height: 1, background: 'var(--border-subtle)' }} />
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>or</span>
+              <div style={{ flex: 1, height: 1, background: 'var(--border-subtle)' }} />
             </div>
             <div style={{ textAlign: 'center', marginTop: '1rem' }}>
               <button onClick={loadSampleCase}
@@ -195,7 +194,7 @@ export default function NyayMitra() {
                 onMouseLeave={e => { e.target.style.background = 'transparent'; e.target.style.color = 'rgba(212,168,67,0.6)'; }}>
                 Use Sample Case (Demo)
               </button>
-              <div style={{ fontSize: '0.7rem', color: 'rgba(232,224,204,0.2)', marginTop: '0.4rem' }}>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: '0.4rem' }}>
                 SC/BLR/2023/4521 · Cheating & Criminal Conspiracy Case
               </div>
             </div>
@@ -208,10 +207,10 @@ export default function NyayMitra() {
               border: `2px solid ${GOLD}`, borderTopColor: 'transparent',
               margin: '0 auto 1.5rem', animation: 'spin 1s linear infinite' }} />
             <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '1.4rem',
-              color: '#e8e0cc', marginBottom: '0.4rem' }}>
+              color: 'var(--text-legal)', marginBottom: '0.4rem' }}>
               {extracting ? 'Extracting text from PDF...' : 'Analyzing with AI...'}
             </div>
-            <div style={{ fontSize: '0.8rem', color: 'rgba(232,224,204,0.35)' }}>{fileName}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{fileName}</div>
             <div style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: 'rgba(212,168,67,0.5)' }}>
               {extracting ? 'Reading all pages of the document' : t('fileComplaint.aiSuggesting')}
             </div>
@@ -228,8 +227,8 @@ export default function NyayMitra() {
                   <div style={{ fontSize: '0.65rem', letterSpacing: 2, textTransform: 'uppercase',
                     color: 'rgba(212,168,67,0.6)', marginBottom: '0.4rem' }}>Case Analysis Complete</div>
                   <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '1.6rem',
-                    fontWeight: 700, color: '#e8e0cc', marginBottom: '0.3rem' }}>{result.case_title}</div>
-                  <div style={{ fontSize: '0.78rem', color: 'rgba(232,224,204,0.45)' }}>
+                    fontWeight: 700, color: 'var(--text-legal)', marginBottom: '0.3rem' }}>{result.case_title}</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                     {result.case_number} · {result.court}
                   </div>
                 </div>
@@ -254,7 +253,7 @@ export default function NyayMitra() {
                     border: '1px solid rgba(212,168,67,0.18)', borderRadius: 20 }}>
                     <span style={{ fontSize: '0.65rem', color: 'rgba(212,168,67,0.6)',
                       textTransform: 'uppercase', letterSpacing: 1 }}>{chip.label}: </span>
-                    <span style={{ fontSize: '0.72rem', color: 'rgba(232,224,204,0.7)' }}>{chip.value}</span>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{chip.value}</span>
                   </div>
                 ))}
               </div>
@@ -273,7 +272,7 @@ export default function NyayMitra() {
                       background: 'rgba(212,168,67,0.1)', border: '1px solid rgba(212,168,67,0.2)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: '0.65rem', color: GOLD, flexShrink: 0, marginTop: 1 }}>{i + 1}</div>
-                    <span style={{ fontSize: '0.82rem', color: '#e8e0cc', lineHeight: 1.4 }}>{a}</span>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--text-legal)', lineHeight: 1.4 }}>{a}</span>
                   </div>
                 ))}
               </div>
@@ -290,7 +289,7 @@ export default function NyayMitra() {
                   ))}
                 </div>
                 {result.charges?.map((c, i) => (
-                  <div key={i} style={{ fontSize: '0.78rem', color: 'rgba(232,224,204,0.55)',
+                  <div key={i} style={{ fontSize: '0.78rem', color: 'var(--text-muted)',
                     marginBottom: '0.3rem', display: 'flex', gap: 6 }}>
                     <span style={{ color: 'rgba(212,168,67,0.4)' }}>•</span>{c}
                   </div>
@@ -305,7 +304,7 @@ export default function NyayMitra() {
                     marginBottom: '0.5rem', alignItems: 'flex-start' }}>
                     <div style={{ width: 5, height: 5, borderRadius: '50%',
                       background: GOLD, marginTop: 6, flexShrink: 0 }} />
-                    <span style={{ fontSize: '0.78rem', color: 'rgba(232,224,204,0.6)',
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)',
                       lineHeight: 1.5 }}>{f}</span>
                   </div>
                 ))}
@@ -325,7 +324,7 @@ export default function NyayMitra() {
                         <div style={{ fontSize: '0.65rem', color: 'rgba(212,168,67,0.6)', marginBottom: 1 }}>
                           {d.event}
                         </div>
-                        <div style={{ fontSize: '0.78rem', color: '#e8e0cc', fontWeight: 500 }}>{d.date}</div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-legal)', fontWeight: 500 }}>{d.date}</div>
                       </div>
                       {i < result.important_dates.length - 1 && (
                         <div style={{ width: 20, height: 1,
@@ -341,7 +340,7 @@ export default function NyayMitra() {
               background: 'rgba(212,168,67,0.03)', border: '1px solid rgba(212,168,67,0.12)' }}>
               <div style={{ fontSize: '0.65rem', letterSpacing: 2, textTransform: 'uppercase',
                 color: 'rgba(212,168,67,0.5)', marginBottom: '0.7rem' }}>AI Case Summary</div>
-              <p style={{ fontSize: '0.88rem', color: 'rgba(232,224,204,0.7)',
+              <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)',
                 lineHeight: 1.75, fontStyle: 'italic' }}>"{result.summary}"</p>
             </div>
           </div>

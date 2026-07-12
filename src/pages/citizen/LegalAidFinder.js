@@ -20,7 +20,7 @@ export default function LegalAidFinder() {
   }, []);
 
   return (
-    <PageWrapper style={{ minHeight: '100vh', background: '#08120f', color: '#d8ede6' }}>
+    <PageWrapper style={{ minHeight: '100vh', background: 'var(--bg-citizen)', color: 'var(--text-citizen)' }}>
       <Navbar theme="green" showBack={true} />
 
       <div style={{ maxWidth: 800, margin: '0 auto', padding: '2rem 2.5rem' }}>
@@ -35,7 +35,7 @@ export default function LegalAidFinder() {
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
           }}>{t('legalAid.title')}</h1>
-          <p style={{ fontSize: '0.85rem', color: 'rgba(216,237,230,0.45)', fontWeight: 300,
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 300,
             marginBottom: '2rem', lineHeight: 1.6 }}>
             {t('legalAid.subtitle')}
           </p>
@@ -51,7 +51,7 @@ export default function LegalAidFinder() {
           <div>
             <div style={{ fontSize: '0.7rem', letterSpacing: 1, textTransform: 'uppercase',
               color: 'rgba(29,158,117,0.6)', marginBottom: 3 }}>National Legal Aid Helpline</div>
-            <div style={{ fontSize: '0.85rem', color: 'rgba(216,237,230,0.6)' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
               Call from anywhere in India — free legal advice in your language
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function LegalAidFinder() {
             style={{ width: '100%', padding: '0.85rem 1.2rem',
               background: 'rgba(29,158,117,0.06)',
               border: '1px solid rgba(29,158,117,0.22)', borderRadius: 10,
-              color: selectedDistrict ? '#d8ede6' : 'rgba(216,237,230,0.35)',
+              color: selectedDistrict ? 'var(--text-citizen)' : 'var(--text-muted)',
               fontSize: '0.9rem', fontFamily: "'Outfit',sans-serif",
               outline: 'none', cursor: 'pointer',
               transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
@@ -98,8 +98,8 @@ export default function LegalAidFinder() {
             <div style={{ padding: '1.4rem 1.8rem', borderBottom: '1px solid rgba(29,158,117,0.1)',
               background: 'rgba(29,158,117,0.07)' }}>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '1.3rem',
-                fontWeight: 700, color: '#d8ede6', marginBottom: '0.2rem' }}>{result.dlsa_name}</div>
-              <div style={{ fontSize: '0.78rem', color: 'rgba(216,237,230,0.5)' }}>
+                fontWeight: 700, color: 'var(--text-citizen)', marginBottom: '0.2rem' }}>{result.dlsa_name}</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                 Secretary: {result.secretary}
               </div>
             </div>
@@ -121,9 +121,9 @@ export default function LegalAidFinder() {
                   borderRight: (!isMobile && i % 2 === 0) ? '1px solid rgba(29,158,117,0.07)' : 'none',
                 }}>
                   <div style={{ fontSize: '0.67rem', letterSpacing: '1.5px',
-                    textTransform: 'uppercase', color: 'rgba(216,237,230,0.35)',
+                    textTransform: 'uppercase', color: 'var(--text-muted)',
                     marginBottom: '0.3rem' }}>{item.icon} {item.label}</div>
-                  <div style={{ fontSize: '0.85rem', color: '#d8ede6', lineHeight: 1.5 }}>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-citizen)', lineHeight: 1.5 }}>
                     {item.value}
                   </div>
                 </div>
@@ -133,7 +133,7 @@ export default function LegalAidFinder() {
             {/* Services with hover tags */}
             <div style={{ padding: '1.2rem 1.8rem', borderTop: '1px solid rgba(29,158,117,0.07)' }}>
               <div style={{ fontSize: '0.67rem', letterSpacing: '1.5px',
-                textTransform: 'uppercase', color: 'rgba(216,237,230,0.35)',
+                textTransform: 'uppercase', color: 'var(--text-muted)',
                 marginBottom: '0.8rem' }}>{t('legalAid.services')}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                 {result.services.map((s, i) => (
@@ -149,7 +149,7 @@ export default function LegalAidFinder() {
                         ? '1px solid rgba(29,158,117,0.5)'
                         : '1px solid rgba(29,158,117,0.2)',
                       borderRadius: 20,
-                      color: hoveredTag === i ? '#d8ede6' : 'rgba(216,237,230,0.7)',
+                      color: hoveredTag === i ? 'var(--text-citizen)' : 'rgba(216,237,230,0.7)',
                       cursor: 'default',
                       transition: 'all 0.25s ease',
                       transform: hoveredTag === i ? 'translateY(-1px)' : 'none',
@@ -161,7 +161,7 @@ export default function LegalAidFinder() {
             <div style={{ padding: '1rem 1.8rem', background: 'rgba(29,158,117,0.06)',
               borderTop: '1px solid rgba(29,158,117,0.1)',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ fontSize: '0.8rem', color: 'rgba(216,237,230,0.5)' }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                 National Toll-Free Legal Aid Helpline
               </div>
               <div style={{ fontFamily: "'Cormorant Garamond',serif",
@@ -172,9 +172,9 @@ export default function LegalAidFinder() {
 
         {/* ── Eligibility Section ── */}
         <div className="reveal-on-scroll" style={{ marginTop: '1.5rem', padding: '1.2rem 1.8rem',
-          background: 'rgba(255,255,255,0.02)',
-          border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12 }}>
-          <div style={{ fontSize: '0.82rem', fontWeight: 500, color: '#d8ede6',
+          background: 'var(--bg-card)',
+          border: 'var(--border-subtle)', borderRadius: 12 }}>
+          <div style={{ fontSize: '0.82rem', fontWeight: 500, color: 'var(--text-citizen)',
             marginBottom: '0.8rem' }}>Who is eligible for free legal aid?</div>
           <div className="stagger-children" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
             {[
@@ -187,7 +187,7 @@ export default function LegalAidFinder() {
               'Persons in custody (undertrials)',
             ].map((item, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8,
-                fontSize: '0.8rem', color: 'rgba(216,237,230,0.5)' }}>
+                fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                 <div style={{ width: 5, height: 5, borderRadius: '50%',
                   background: TEAL, flexShrink: 0 }} />
                 {item}
