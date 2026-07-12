@@ -230,14 +230,14 @@ function PortalCard({ onClick, bg, border, iconBg, iconBorder, icon, badgeColor,
         <div style={{ fontSize: '0.65rem', letterSpacing: 2, textTransform: 'uppercase',
           color: badgeColor, marginBottom: '0.6rem', fontWeight: 500 }}>{badge}</div>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.7rem',
-          fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>{title}</div>
-        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)',
+          fontWeight: 700, marginBottom: '0.5rem', color: '#e8e4d8' }}>{title}</div>
+        <div style={{ fontSize: '0.85rem', color: 'rgba(232,228,216,0.5)',
           lineHeight: 1.6, marginBottom: '1.5rem', fontWeight: 300 }}>{desc}</div>
         <div className="stagger-children" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem',
           marginBottom: '1.5rem' }}>
           {features.map((f, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8,
-              fontSize: '0.8rem', color: 'var(--text-muted)', opacity: hovered ? 1 : 0.8, transition: 'opacity 0.3s' }}>
+              fontSize: '0.8rem', color: 'rgba(232,228,216,0.5)', opacity: hovered ? 1 : 0.8, transition: 'opacity 0.3s' }}>
               <div style={{ width: 5, height: 5, borderRadius: '50%',
                 background: dotColor, flexShrink: 0,
                 boxShadow: hovered ? `0 0 8px ${dotColor}` : 'none', transition: 'box-shadow 0.3s' }} />
