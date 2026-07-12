@@ -11,19 +11,7 @@ const stats = [
   { num: '1.6', suffix: 'Cr', label: 'Without Legal Aid' },
 ];
 
-const citizenFeatures = [
-  'Search by prisoner ID or name',
-  'Know your legal rights in Hindi',
-  'Find free legal aid near you',
-  'SMS alerts for hearing dates',
-];
 
-const legalFeatures = [
-  'Nyay Mitra — AI case summarizer',
-  'Undertrial overdue alert dashboard',
-  'One-click bail application generator',
-  'Indian Kanoon precedent finder',
-];
 
 function CountUpNumber({ end, suffix }) {
   const [count, setCount] = useState(0);
