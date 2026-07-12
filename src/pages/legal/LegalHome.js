@@ -137,12 +137,12 @@ export default function LegalHome() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column',
-      background: '#0d0c08', color: '#e8e0cc' }}>
+      background: 'var(--bg-legal)', color: 'var(--text-legal)' }}>
       <Navbar theme="legal" showBack={true} />
 
       <div style={{ display: 'flex', flex: 1, flexDirection: isMobile ? 'column' : 'row' }}>
         {/* Sidebar */}
-        <div style={{ width: isMobile ? '100%' : 220, background: 'rgba(255,255,255,0.025)',
+        <div style={{ width: isMobile ? '100%' : 220, background: 'var(--bg-card)',
           borderRight: isMobile ? 'none' : '1px solid rgba(212,168,67,0.08)',
           borderBottom: isMobile ? '1px solid rgba(212,168,67,0.08)' : 'none',
           padding: '1.5rem 1rem', display: 'flex',
@@ -150,7 +150,7 @@ export default function LegalHome() {
           {sidebarSections.map((section, si) => (
             <div key={si}>
               <div style={{ fontSize: '0.6rem', letterSpacing: 2,
-                textTransform: 'uppercase', color: 'rgba(232,224,204,0.3)',
+                textTransform: 'uppercase', color: 'var(--text-dim)',
                 padding: '0.8rem 0.6rem 0.3rem',
                 marginTop: si > 0 ? '0.5rem' : 0 }}>{section.section}</div>
               {section.items.map((item, ii) => (
@@ -158,7 +158,7 @@ export default function LegalHome() {
                   style={{ display: 'flex', alignItems: 'center', gap: 10,
                     padding: '0.6rem 0.8rem', borderRadius: 8,
                     cursor: 'pointer', fontSize: '0.82rem', transition: 'all 0.2s',
-                    color: item.active ? GOLD : 'rgba(232,224,204,0.5)',
+                    color: item.active ? GOLD : 'var(--text-muted)',
                     background: item.active ? 'rgba(212,168,67,0.1)' : 'transparent',
                     borderLeft: item.active ? `2px solid ${GOLD}` : '2px solid transparent' }}
                   onMouseEnter={e => !item.active && (e.currentTarget.style.background = 'rgba(212,168,67,0.06)')}
@@ -184,11 +184,11 @@ export default function LegalHome() {
             <div style={{ fontSize: '0.72rem', letterSpacing: 2, textTransform: 'uppercase',
               color: 'rgba(212,168,67,0.6)', marginBottom: '0.4rem' }}>{getGreeting()}</div>
             <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: '2.4rem',
-              fontWeight: 700, color: '#e8e0cc', marginBottom: '0.3rem',
-              background: 'linear-gradient(90deg, #e8e0cc, #d4a843)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              fontWeight: 700, color: 'var(--text-legal)', marginBottom: '0.3rem',
+              background: 'linear-gradient(90deg, var(--text-legal), #d4a843)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Legal Dashboard
             </h1>
-            <p style={{ fontSize: '0.85rem', color: 'rgba(232,224,204,0.4)', fontWeight: 300 }}>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 300 }}>
               Karnataka District Courts · Updated just now
             </p>
           </div>
@@ -197,7 +197,7 @@ export default function LegalHome() {
           <div className="stagger-children" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)',
             gap: '1rem', marginBottom: '2.5rem' }}>
             {statsData.map((s, i) => (
-              <div key={i} className="glass-card" style={{ background: 'rgba(255,255,255,0.025)',
+              <div key={i} className="glass-card" style={{ background: 'var(--bg-card)',
                 border: '1px solid rgba(212,168,67,0.08)', borderRadius: 12, padding: '1.2rem',
                 boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
                 <div style={{ fontFamily: "'Cormorant Garamond',serif",
@@ -205,7 +205,7 @@ export default function LegalHome() {
                   marginBottom: '0.2rem' }}>
                   <CountUp end={s.num} suffix={s.suffix} rawStr={s.rawStr} />
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'rgba(232,224,204,0.5)',
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)',
                   textTransform: 'uppercase', letterSpacing: 1 }}>{s.label}</div>
                 <div style={{ fontSize: '0.7rem', color: s.changeColor,
                   marginTop: '0.5rem', fontWeight: 500 }}>{s.change}</div>
@@ -231,7 +231,7 @@ function ToolCard({ t, onClick }) {
   return (
     <div onClick={onClick}
       className="glass-card"
-      style={{ background: t.alert ? 'rgba(226,75,74,0.03)' : 'rgba(255,255,255,0.02)',
+      style={{ background: t.alert ? 'rgba(226,75,74,0.03)' : 'var(--bg-card)',
         border: `1px solid ${t.alert ? 'rgba(226,75,74,0.2)' : 'rgba(212,168,67,0.08)'}`,
         borderRadius: 14, padding: '1.6rem', cursor: 'pointer', position: 'relative', overflow: 'hidden',
         boxShadow: hovered ? `0 8px 30px ${t.alert ? 'rgba(226,75,74,0.15)' : 'rgba(212,168,67,0.1)'}` : 'none',
@@ -258,8 +258,8 @@ function ToolCard({ t, onClick }) {
           {t.icon}
         </div>
         <div style={{ fontSize: '1.05rem', fontWeight: 600,
-          color: '#e8e0cc', marginBottom: '0.4rem' }}>{t.title}</div>
-        <div style={{ fontSize: '0.85rem', color: 'rgba(232,224,204,0.45)',
+          color: 'var(--text-legal)', marginBottom: '0.4rem' }}>{t.title}</div>
+        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)',
           lineHeight: 1.6, marginBottom: '1.2rem' }}>{t.desc}</div>
         <div style={{ fontSize: '0.8rem', color: t.ctaColor, fontWeight: 500,
           transition: 'transform 0.3s', transform: hovered ? 'translateX(5px)' : 'none' }}>

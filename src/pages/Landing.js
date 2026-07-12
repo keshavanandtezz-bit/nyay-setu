@@ -71,7 +71,7 @@ export default function Landing() {
 
 
   return (
-    <PageWrapper style={{ background: '#08091a' }}>
+    <PageWrapper style={{ background: 'var(--bg-primary)' }}>
       <Navbar />
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -87,7 +87,7 @@ export default function Landing() {
                 <CountUpNumber end={parseFloat(s.num)} suffix={s.suffix} />
               </div>
               <div style={{ fontSize: '0.65rem', letterSpacing: '1.5px',
-                textTransform: 'uppercase', color: 'rgba(232,228,216,0.35)' }}>{s.label}</div>
+                textTransform: 'uppercase', color: 'var(--text-dim)' }}>{s.label}</div>
             </div>
             {i < stats.length - 1 && (
               <div className="hide-mobile" style={{ width: 1, height: 30, background: 'rgba(255,255,255,0.06)' }} />
@@ -115,7 +115,7 @@ export default function Landing() {
           {t('landing.headline')}
         </h1>
 
-        <p className="reveal-on-scroll" style={{ fontSize: '1rem', color: 'rgba(232,228,216,0.5)', textAlign: 'center',
+        <p className="reveal-on-scroll" style={{ fontSize: '1rem', color: 'var(--text-muted)', textAlign: 'center',
           maxWidth: 480, lineHeight: 1.7, marginBottom: '3rem', fontWeight: 300 }}>
           {t('landing.subtitle')}
         </p>
@@ -168,7 +168,7 @@ export default function Landing() {
           </div>
         </div>
 
-        <div className="reveal-on-scroll stagger-children" style={{ fontSize: '0.75rem', color: 'rgba(232,228,216,0.25)',
+        <div className="reveal-on-scroll stagger-children" style={{ fontSize: '0.75rem', color: 'var(--text-dim)',
           display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
           {['Built for India', 'Free to use', 'Powered by Groq AI', 'Data from NCRB · NJDG']
             .map((t, i) => (
@@ -230,14 +230,14 @@ function PortalCard({ onClick, bg, border, iconBg, iconBorder, icon, badgeColor,
         <div style={{ fontSize: '0.65rem', letterSpacing: 2, textTransform: 'uppercase',
           color: badgeColor, marginBottom: '0.6rem', fontWeight: 500 }}>{badge}</div>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.7rem',
-          fontWeight: 700, marginBottom: '0.5rem', color: '#e8e4d8' }}>{title}</div>
-        <div style={{ fontSize: '0.85rem', color: 'rgba(232,228,216,0.5)',
+          fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>{title}</div>
+        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)',
           lineHeight: 1.6, marginBottom: '1.5rem', fontWeight: 300 }}>{desc}</div>
         <div className="stagger-children" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem',
           marginBottom: '1.5rem' }}>
           {features.map((f, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8,
-              fontSize: '0.8rem', color: 'rgba(232,228,216,0.5)', opacity: hovered ? 1 : 0.8, transition: 'opacity 0.3s' }}>
+              fontSize: '0.8rem', color: 'var(--text-muted)', opacity: hovered ? 1 : 0.8, transition: 'opacity 0.3s' }}>
               <div style={{ width: 5, height: 5, borderRadius: '50%',
                 background: dotColor, flexShrink: 0,
                 boxShadow: hovered ? `0 0 8px ${dotColor}` : 'none', transition: 'box-shadow 0.3s' }} />
