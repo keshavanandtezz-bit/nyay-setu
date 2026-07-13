@@ -22,6 +22,14 @@
   --border-card: rgba(255,255,255,0.08);
   --shadow-card: 0 12px 40px rgba(0,0,0,0.3);
 
+  /* Portal card backgrounds */
+  --bg-card-citizen: linear-gradient(135deg,#0a1f1a,#0d2b24);
+  --bg-card-legal: linear-gradient(135deg,#1a1008,#251808);
+  --card-text-primary: #e8e4d8;
+  --card-text-muted: rgba(232,228,216,0.5);
+  --card-border-citizen: rgba(29,158,117,0.25);
+  --card-border-legal: rgba(212,168,67,0.2);
+
   /* Spacing */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
@@ -58,6 +66,14 @@
   --border-subtle: rgba(0,0,0,0.08);
   --border-card: rgba(0,0,0,0.1);
   --shadow-card: 0 12px 40px rgba(0,0,0,0.08);
+
+  /* Portal card backgrounds — light mode */
+  --bg-card-citizen: linear-gradient(135deg,#dff0e8,#c8e6d6);
+  --bg-card-legal: linear-gradient(135deg,#f0e8d4,#e6dcc4);
+  --card-text-primary: #1a2e28;
+  --card-text-muted: rgba(42,37,32,0.6);
+  --card-border-citizen: rgba(29,158,117,0.35);
+  --card-border-legal: rgba(180,140,50,0.35);
 }
 
 /* === GLOBAL STYLES === */

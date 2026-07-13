@@ -114,8 +114,8 @@ export default function Landing() {
           <div style={{ animation: 'slideInLeft 0.6s ease-out forwards' }}>
             <PortalCard
               onClick={() => navigate('/citizen')}
-              bg="linear-gradient(135deg,#0a1f1a,#0d2b24)"
-              border="rgba(29,158,117,0.25)"
+              bgVar="var(--bg-card-citizen)"
+              borderVar="var(--card-border-citizen)"
               iconBg="rgba(29,158,117,0.15)"
               iconBorder="rgba(29,158,117,0.3)"
               icon="🏛️"
@@ -136,8 +136,8 @@ export default function Landing() {
           <div style={{ animation: 'slideInRight 0.6s ease-out forwards', animationDelay: '0.1s', opacity: 0 }}>
             <PortalCard
               onClick={() => navigate('/legal')}
-              bg="linear-gradient(135deg,#1a1008,#251808)"
-              border="rgba(212,168,67,0.2)"
+              bgVar="var(--bg-card-legal)"
+              borderVar="var(--card-border-legal)"
               iconBg="rgba(212,168,67,0.1)"
               iconBorder="rgba(212,168,67,0.25)"
               icon="⚖️"
@@ -162,7 +162,7 @@ export default function Landing() {
             .map((t, i) => (
             <span key={i} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               {i > 0 && <span style={{ width: 3, height: 3, borderRadius: '50%',
-                background: 'rgba(232,228,216,0.2)', display: 'inline-block' }} />}
+                background: 'var(--text-dim)', display: 'inline-block' }} />}
               {t}
             </span>
           ))}
@@ -172,11 +172,10 @@ export default function Landing() {
   );
 }
 
-function PortalCard({ onClick, bg, border, iconBg, iconBorder, icon, badgeColor,
+function PortalCard({ onClick, bgVar, borderVar, iconBg, iconBorder, icon, badgeColor,
   badge, tag, title, desc, features, dotColor, ctaBg, ctaColor, ctaBorder, cta }) {
   const [hovered, setHovered] = useState(false);
   
-  // Choose glow color based on the theme (dotColor is a good proxy)
   const isCitizen = dotColor === '#1d9e75';
   
   return (
@@ -186,11 +185,12 @@ function PortalCard({ onClick, bg, border, iconBg, iconBorder, icon, badgeColor,
       onMouseLeave={() => setHovered(false)}
       className="glass-card"
       style={{ 
-        background: bg,
-        border: `1px solid ${hovered ? border.replace('0.25','0.5').replace('0.2','0.4') : border}`,
+        background: bgVar,
+        border: `1px solid ${borderVar}`,
         borderRadius: 16, padding: '2.2rem 2rem', cursor: 'pointer',
         position: 'relative',
         overflow: 'hidden',
+        transition: 'all 0.4s ease',
         boxShadow: hovered ? `0 12px 40px ${isCitizen ? 'rgba(29,158,117,0.2)' : 'rgba(212,168,67,0.15)'}` : 'none',
         height: '100%'
       }}>
@@ -218,14 +218,14 @@ function PortalCard({ onClick, bg, border, iconBg, iconBorder, icon, badgeColor,
         <div style={{ fontSize: '0.65rem', letterSpacing: 2, textTransform: 'uppercase',
           color: badgeColor, marginBottom: '0.6rem', fontWeight: 500 }}>{badge}</div>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.7rem',
-          fontWeight: 700, marginBottom: '0.5rem', color: '#e8e4d8' }}>{title}</div>
-        <div style={{ fontSize: '0.85rem', color: 'rgba(232,228,216,0.5)',
+          fontWeight: 700, marginBottom: '0.5rem', color: 'var(--card-text-primary)' }}>{title}</div>
+        <div style={{ fontSize: '0.85rem', color: 'var(--card-text-muted)',
           lineHeight: 1.6, marginBottom: '1.5rem', fontWeight: 300 }}>{desc}</div>
         <div className="stagger-children" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem',
           marginBottom: '1.5rem' }}>
           {features.map((f, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8,
-              fontSize: '0.8rem', color: 'rgba(232,228,216,0.5)', opacity: hovered ? 1 : 0.8, transition: 'opacity 0.3s' }}>
+              fontSize: '0.8rem', color: 'var(--card-text-muted)', opacity: hovered ? 1 : 0.8, transition: 'opacity 0.3s' }}>
               <div style={{ width: 5, height: 5, borderRadius: '50%',
                 background: dotColor, flexShrink: 0,
                 boxShadow: hovered ? `0 0 8px ${dotColor}` : 'none', transition: 'box-shadow 0.3s' }} />
