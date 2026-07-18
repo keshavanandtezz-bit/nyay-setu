@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
 import PageWrapper from '../../components/PageWrapper';
@@ -39,7 +39,14 @@ export default function NyayMitra() {
   const [error, setError] = useState('');
   const [fileName, setFileName] = useState('');
   const [dragOver, setDragOver] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const fileRef = useRef();
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
 
   async function processFile(file) {
     if (!file || file.type !== 'application/pdf') {
@@ -64,7 +71,7 @@ export default function NyayMitra() {
         throw new Error('Analysis failed. Please try again.');
       }
     } catch (err) {
-      setError(err.message || 'Upload failed. Make sure backend is running on port 8000.');
+      setError(err.message || 'AI analysis service is temporarily unavailable. Please try again.');
       setStage('upload');
     } finally {
       setAnalyzing(false);
@@ -86,7 +93,7 @@ export default function NyayMitra() {
         throw new Error('Sample analysis failed.');
       }
     } catch (err) {
-      setError(err.message || 'Sample analysis failed. Make sure backend is running on port 8000.');
+      setError(err.message || 'AI analysis service is temporarily unavailable. Please try again.');
       setStage('upload');
     } finally {
       setAnalyzing(false);
@@ -117,7 +124,7 @@ export default function NyayMitra() {
     <PageWrapper style={{ minHeight: '100vh', background: 'var(--bg-legal)', color: 'var(--text-legal)' }}>
       <Navbar theme="legal" showBack={true} />
 
-      <div style={{ maxWidth: 920, margin: '0 auto', padding: '2rem 2.5rem' }}>
+      <div style={{ maxWidth: 920, margin: '0 auto', padding: isMobile ? '1rem 1rem' : '2rem 2.5rem' }}>
 
         <div style={{ display: 'flex', alignItems: 'flex-start',
           justifyContent: 'space-between', marginBottom: '1.8rem' }}>

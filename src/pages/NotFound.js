@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import PageWrapper from '../components/PageWrapper';
@@ -8,7 +7,7 @@ export default function NotFound() {
 
   return (
     <PageWrapper style={{ 
-      background: '#08091a', 
+      background: 'var(--bg-primary)', 
       minHeight: '100vh', 
       display: 'flex', 
       flexDirection: 'column',
@@ -41,7 +40,7 @@ export default function NotFound() {
           fontSize: '12vw', 
           lineHeight: 1,
           fontWeight: 700, 
-          color: '#d4a843',
+          color: 'var(--gold)',
           margin: 0,
           background: 'linear-gradient(135deg, #f0d58b 0%, #d4a843 50%, #8a6a24 100%)',
           WebkitBackgroundClip: 'text',
@@ -53,7 +52,7 @@ export default function NotFound() {
         
         <p style={{ 
           fontSize: '1.2rem', 
-          color: 'rgba(232,228,216,0.6)', 
+          color: 'var(--text-muted)', 
           marginTop: '1rem',
           marginBottom: '3rem',
           letterSpacing: 2,
@@ -68,8 +67,8 @@ export default function NotFound() {
             padding: '1rem 2.5rem', 
             fontSize: '1rem', 
             fontWeight: 500,
-            color: '#08091a', 
-            background: '#d4a843', 
+            color: 'var(--bg-primary)', 
+            background: 'var(--gold)', 
             border: 'none', 
             borderRadius: 30,
             cursor: 'pointer',

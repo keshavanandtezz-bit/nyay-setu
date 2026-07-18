@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
+import PageWrapper from '../../components/PageWrapper';
 import { legalAPI } from '../../services/api';
 
 const GOLD = '#d4a843';
@@ -22,7 +23,7 @@ const sidebarSections = [
   {
     section: 'Case Management',
     items: [
-      { icon: '⚠️', label: 'Overdue Alerts', route: '/legal/alerts', badge: '8' },
+      { icon: '⚠️', label: 'Overdue Alerts', route: '/legal/alerts' },
       { icon: '📅', label: 'Hearing Schedule', route: '/legal/alerts' },
     ],
   },
@@ -65,6 +66,7 @@ export default function LegalHome() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [overdueCount, setOverdueCount] = useState(null);
 
   const DEFAULT_STATS = [
     { num: 0, rawStr: '—', label: t('legal.totalUndertrials'), change: t('common.loading'), changeColor: 'rgba(232,224,204,0.3)', numColor: GOLD },
@@ -111,22 +113,38 @@ export default function LegalHome() {
   useEffect(() => {
     legalAPI.getStats()
       .then(data => {
+        const overdue = data.overdue ?? data.red ?? null;
+        setOverdueCount(overdue);
         setStatsData([
-          { num: data.active_undertrials ?? data.total ?? 2847, rawStr: '', label: t('legal.totalUndertrials'), change: data.undertrial_change || '↑ 23 this week', changeColor: '#e24b4a', numColor: GOLD },
-          { num: data.overdue ?? data.red ?? 312, rawStr: '', label: t('legal.overdue'), change: 'Exceeding legal limit', changeColor: '#e24b4a', numColor: '#e24b4a' },
-          { num: data.cases_this_week ?? 48, rawStr: '', label: t('legal.approaching'), change: data.cases_change || '↓ 3 resolved', changeColor: '#1d9e75', numColor: '#1d9e75' },
-          { num: parseFloat(data.avg_ai_response || '1.2'), rawStr: '', suffix: 's', label: t('legal.noLawyer'), change: 'Nyay Mitra 99% uptime', changeColor: '#1d9e75', numColor: GOLD },
+          { num: data.active_undertrials ?? data.total ?? 0, rawStr: '—', label: t('legal.totalUndertrials'), change: data.undertrial_change || t('common.loading'), changeColor: '#e24b4a', numColor: GOLD },
+          { num: overdue ?? 0, rawStr: '—', label: t('legal.overdue'), change: 'Exceeding legal limit', changeColor: '#e24b4a', numColor: '#e24b4a' },
+          { num: data.cases_this_week ?? 0, rawStr: '—', label: t('legal.approaching'), change: data.cases_change || t('common.loading'), changeColor: '#1d9e75', numColor: '#1d9e75' },
+          { num: parseFloat(data.avg_ai_response || '0'), rawStr: '—', suffix: 's', label: t('legal.noLawyer'), change: 'Nyay Mitra 99% uptime', changeColor: '#1d9e75', numColor: GOLD },
         ]);
       })
       .catch(() => {
+        // On error, show neutral placeholders instead of fake data
         setStatsData([
-          { num: 2847, rawStr: '', label: t('legal.totalUndertrials'), change: '↑ 23 this week', changeColor: '#e24b4a', numColor: GOLD },
-          { num: 312, rawStr: '', label: t('legal.overdue'), change: 'Exceeding legal limit', changeColor: '#e24b4a', numColor: '#e24b4a' },
-          { num: 48, rawStr: '', label: t('legal.approaching'), change: '↓ 3 resolved', changeColor: '#1d9e75', numColor: '#1d9e75' },
-          { num: 1.2, rawStr: '', suffix: 's', label: t('legal.noLawyer'), change: 'Nyay Mitra 99% uptime', changeColor: '#1d9e75', numColor: GOLD },
+          { num: 0, rawStr: '—', label: t('legal.totalUndertrials'), change: t('common.loading'), changeColor: 'rgba(232,224,204,0.3)', numColor: GOLD },
+          { num: 0, rawStr: '—', label: t('legal.overdue'), change: t('common.loading'), changeColor: 'rgba(232,224,204,0.3)', numColor: '#e24b4a' },
+          { num: 0, rawStr: '—', label: t('legal.approaching'), change: t('common.loading'), changeColor: 'rgba(232,224,204,0.3)', numColor: '#1d9e75' },
+          { num: 0, rawStr: '—', suffix: 's', label: t('legal.noLawyer'), change: 'Nyay Mitra 99% uptime', changeColor: '#1d9e75', numColor: GOLD },
         ]);
       });
   }, [t]);
+
+  // Build sidebar with dynamic overdue badge from state
+  const sidebarWithBadge = sidebarSections.map(section => ({
+    ...section,
+    items: section.items.map(item => {
+      if (item.label === 'Overdue Alerts') {
+        return overdueCount != null && overdueCount > 0
+          ? { ...item, badge: String(overdueCount) }
+          : { ...item, badge: null };
+      }
+      return item;
+    }),
+  }));
 
   function getGreeting() {
     const hour = new Date().getHours();
@@ -136,7 +154,7 @@ export default function LegalHome() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column',
+    <PageWrapper style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column',
       background: 'var(--bg-legal)', color: 'var(--text-legal)' }}>
       <Navbar theme="legal" showBack={true} />
 
@@ -147,7 +165,7 @@ export default function LegalHome() {
           borderBottom: isMobile ? '1px solid rgba(212,168,67,0.08)' : 'none',
           padding: '1.5rem 1rem', display: 'flex',
           flexDirection: 'column', gap: '0.3rem', flexShrink: 0 }}>
-          {sidebarSections.map((section, si) => (
+          {sidebarWithBadge.map((section, si) => (
             <div key={si}>
               <div style={{ fontSize: '0.6rem', letterSpacing: 2,
                 textTransform: 'uppercase', color: 'var(--text-dim)',
@@ -221,7 +239,7 @@ export default function LegalHome() {
           </div>
         </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }
 

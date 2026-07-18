@@ -129,9 +129,9 @@ export default function RightsBot() {
             <button key={i} onClick={() => sendMessage(s)}
               disabled={loading}
               style={{ fontSize: '0.72rem', padding: '6px 14px',
-                background: 'rgba(29,158,117,0.05)',
-                border: '1px solid rgba(29,158,117,0.2)',
-                borderRadius: 20, color: 'rgba(216,237,230,0.7)',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 20, color: 'var(--text-muted)',
                 cursor: loading ? 'default' : 'pointer', fontFamily: "'Outfit',sans-serif",
                 transition: 'all 0.2s', animation: 'fadeInScale 0.4s ease-out forwards', animationDelay: `${i * 0.05}s`, opacity: 0 }}
               onMouseEnter={e => {
@@ -143,8 +143,8 @@ export default function RightsBot() {
               }}
               onMouseLeave={e => {
                 if(!loading) {
-                  e.target.style.background = 'rgba(29,158,117,0.05)';
-                  e.target.style.color = 'rgba(216,237,230,0.7)';
+                  e.target.style.background = 'var(--bg-card)';
+                  e.target.style.color = 'var(--text-muted)';
                   e.target.style.transform = 'none';
                 }
               }}>

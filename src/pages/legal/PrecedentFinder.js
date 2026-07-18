@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
 import PageWrapper from '../../components/PageWrapper';
 import { searchPrecedents } from '../../data/precedents';
+import { legalAPI } from '../../services/api';
 
 const GOLD = '#d4a843';
 
@@ -18,6 +19,7 @@ export default function PrecedentFinder() {
   const [ipcSection, setIpcSection] = useState('');
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
+  const [searching, setSearching] = useState(false);
   const [expanded, setExpanded] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [hoveredChip, setHoveredChip] = useState(null);
@@ -31,12 +33,25 @@ export default function PrecedentFinder() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  function handleSearch() {
+  async function handleSearch() {
     if (!query.trim() && !ipcSection) return;
-    const found = searchPrecedents(query, ipcSection);
-    setResults(found);
-    setSearched(true);
+    setSearching(true);
     setExpanded(null);
+    try {
+      const data = await legalAPI.getPrecedents(ipcSection, query);
+      if (data && data.precedents && data.precedents.length > 0) {
+        setResults(data.precedents);
+      } else {
+        // Fall back to local search
+        setResults(searchPrecedents(query, ipcSection));
+      }
+    } catch {
+      // API unavailable — use local data
+      setResults(searchPrecedents(query, ipcSection));
+    } finally {
+      setSearching(false);
+      setSearched(true);
+    }
   }
 
   function handleKeyDown(e) {
@@ -111,21 +126,21 @@ export default function PrecedentFinder() {
                 minWidth: isMobile ? 0 : 140, flex: isMobile ? 1 : 'none',
                 transition: 'border-color 0.3s ease',
               }}>
-              <option value="" style={{ background: '#1a1408' }}>All Sections</option>
+              <option value="" style={{ background: 'var(--bg-input)' }}>All Sections</option>
               {IPC_OPTIONS.filter(o => o).map((o, i) => (
-                <option key={i} value={o} style={{ background: '#1a1408' }}>{o}</option>
+                <option key={i} value={o} style={{ background: 'var(--bg-input)' }}>{o}</option>
               ))}
             </select>
-            <button onClick={handleSearch}
-              style={{ padding: '0.85rem 1.8rem', background: GOLD, border: 'none',
+            <button onClick={handleSearch} disabled={searching}
+              style={{ padding: '0.85rem 1.8rem', background: searching ? 'rgba(212,168,67,0.5)' : GOLD, border: 'none',
                 borderRadius: 10, color: '#0d0c08', fontFamily: "'Outfit',sans-serif",
-                fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer',
+                fontSize: '0.85rem', fontWeight: 600, cursor: searching ? 'not-allowed' : 'pointer',
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 boxShadow: '0 2px 12px rgba(212,168,67,0.2)',
               }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(212,168,67,0.35)'; }}
+              onMouseEnter={e => { if (!searching) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(212,168,67,0.35)'; } }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(212,168,67,0.2)'; }}>
-              {t('common.search')}
+              {searching ? '⏳ Searching…' : t('common.search')}
             </button>
           </div>
         </div>

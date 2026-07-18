@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
@@ -45,8 +45,7 @@ export default function CaseJourney() {
   /* Documents */
   const [documents, setDocuments] = useState([]);
   const [docsLoading, setDocsLoading] = useState(false);
-
-  const questionRef = useRef(null);
+  const [uploadMsg, setUploadMsg] = useState('');
 
   /* Fetch case on mount */
   useEffect(() => {
@@ -216,15 +215,31 @@ export default function CaseJourney() {
             }}>
               📎 {t('caseJourney.documents')}
             </div>
-            <button
-              onClick={() => {/* Upload flow — placeholder */}}
-              style={{
-                fontSize: '0.75rem', padding: '4px 14px',
-                background: 'rgba(29,158,117,0.1)', border: `1px solid ${C.cardBorder}`,
-                borderRadius: 6, color: C.greenLight, cursor: 'pointer',
-                fontFamily: "'Outfit',sans-serif",
-              }}
-            >+ {t('caseJourney.uploadDoc')}</button>
+            <div style={{ position: 'relative', display: 'inline-block' }}>
+              <button
+                onClick={() => {
+                  setUploadMsg('Document upload feature coming soon!');
+                  setTimeout(() => setUploadMsg(''), 3000);
+                }}
+                style={{
+                  fontSize: '0.75rem', padding: '4px 14px',
+                  background: 'rgba(29,158,117,0.1)', border: `1px solid ${C.cardBorder}`,
+                  borderRadius: 6, color: C.greenLight, cursor: 'pointer',
+                  fontFamily: "'Outfit',sans-serif",
+                }}
+              >+ {t('caseJourney.uploadDoc')}</button>
+              {uploadMsg && (
+                <div role="status" aria-live="polite" style={{
+                  position: 'absolute', bottom: 'calc(100% + 6px)', right: 0,
+                  background: 'var(--bg-card, #1a2b25)', border: `1px solid ${C.cardBorder}`,
+                  borderRadius: 6, padding: '4px 10px', whiteSpace: 'nowrap',
+                  fontSize: '0.72rem', color: C.greenLight,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                  animation: 'fadeInUp 0.2s ease forwards',
+                  zIndex: 10,
+                }}>{uploadMsg}</div>
+              )}
+            </div>
           </div>
 
           {docsLoading ? (
@@ -289,12 +304,12 @@ export default function CaseJourney() {
             border: '1px solid rgba(59,130,246,0.15)', borderRadius: 8, overflow: 'hidden',
           }}>
             <input
-              ref={questionRef}
               type="text"
               value={question}
               onChange={e => setQuestion(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && askAdvisor()}
+              onKeyDown={e => e.key === 'Enter' && !aiLoading && askAdvisor()}
               placeholder="e.g. What should I do next? How long will investigation take?"
+              aria-label="Ask the AI advisor a question about your case"
               style={{
                 flex: 1, background: 'transparent', border: 'none', outline: 'none',
                 padding: '0.8rem 1rem', fontSize: '0.85rem', color: C.text,
@@ -304,6 +319,8 @@ export default function CaseJourney() {
             <button
               onClick={askAdvisor}
               disabled={aiLoading || !question.trim()}
+              tabIndex={0}
+              aria-label={t('caseJourney.askAdvisor')}
               style={{
                 padding: '0.8rem 1.4rem', background: C.blue, border: 'none',
                 color: '#fff', fontFamily: "'Outfit',sans-serif", fontSize: '0.82rem',
@@ -316,10 +333,10 @@ export default function CaseJourney() {
           </div>
 
           {aiError && (
-            <div style={{
+            <div role="alert" style={{
               marginTop: '0.8rem', padding: '0.6rem 0.8rem',
               background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
-              borderRadius: 8, fontSize: '0.82rem', color: '#f87171',
+              borderRadius: 8, fontSize: '0.82rem', color: 'var(--color-error, #f87171)',
             }}>⚠️ {aiError}</div>
           )}
 

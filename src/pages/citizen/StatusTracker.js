@@ -250,7 +250,7 @@ function PrisonerCard({ prisoner: p, isMobile }) {
             </div>
           </div>
           <div style={{ textAlign: isMobile ? 'left' : 'right',
-            background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: 12, border: 'var(--border-card)' }}>
+            background: 'var(--bg-card)', padding: '1rem', borderRadius: 12, border: '1px solid var(--border-card)' }}>
             <div style={{ fontSize: '0.65rem', letterSpacing: 2,
               textTransform: 'uppercase', color: 'var(--text-muted)',
               marginBottom: 4 }}>{t('statusTracker.daysInCustody')}</div>
@@ -266,7 +266,7 @@ function PrisonerCard({ prisoner: p, isMobile }) {
 
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 0 }}>
           {[
-            { label: t('statusTracker.court'), value: p.prison || p.prison_location },
+            { label: 'Prison Location', value: p.prison || p.prison_location },
             { label: t('statusTracker.court'), value: p.court },
             { label: t('statusTracker.charges'), value: p.charges },
             { label: 'IPC Sections', value: p.ipc_sections },

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
@@ -131,6 +131,14 @@ export default function FileComplaint() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [step, setStep] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [copyToast, setCopyToast] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
 
   const STEPS = [
     { title: t('fileComplaint.step1Title'), description: t('fileComplaint.step1Desc') },
@@ -462,7 +470,16 @@ export default function FileComplaint() {
           </div>
 
           {/* Action buttons */}
-          <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+            {copyToast && (
+              <div style={{
+                position: 'absolute', top: '-2.5rem', left: '50%', transform: 'translateX(-50%)',
+                background: C.green, color: '#fff', padding: '0.4rem 1rem',
+                borderRadius: 6, fontSize: '0.8rem', fontWeight: 600,
+                pointerEvents: 'none', whiteSpace: 'nowrap',
+                animation: 'fadeInUp 0.2s ease-out',
+              }}>✓ Copied!</div>
+            )}
             <button
               onClick={() => downloadComplaint(submitResult.case_id)}
               style={{
@@ -474,7 +491,8 @@ export default function FileComplaint() {
             <button
               onClick={() => {
                 navigator.clipboard?.writeText(submitResult.case_id);
-                alert('Reference number copied!');
+                setCopyToast(true);
+                setTimeout(() => setCopyToast(false), 2000);
               }}
               style={{
                 padding: '0.85rem 1.5rem', background: 'rgba(29,158,117,0.1)',
@@ -566,6 +584,7 @@ export default function FileComplaint() {
               <input
                 type="date"
                 value={form.date}
+                max={new Date().toISOString().split('T')[0]}
                 onChange={e => updateField('date', e.target.value)}
                 style={inputStyle}
               />
@@ -617,7 +636,7 @@ export default function FileComplaint() {
           {step === 2 && (
             <div>
               <h3 style={stepHeading}>{t('fileComplaint.step3Title')}</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={labelStyle}>{t('fileComplaint.complainantName')} *</label>
                   <input type="text" value={form.complainantName}

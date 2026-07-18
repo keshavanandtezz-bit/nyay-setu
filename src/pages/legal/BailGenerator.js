@@ -64,7 +64,7 @@ export default function BailGenerator() {
         throw new Error('Generation failed. Please try again.');
       }
     } catch (err) {
-      setError(err.message || 'Could not generate application. Make sure the backend is running on port 8000.');
+      setError(err.message || 'AI service is temporarily unavailable. Please try again in a moment.');
     }
     setGenerating(false);
   }
@@ -131,7 +131,7 @@ export default function BailGenerator() {
                   outline: 'none', cursor: 'pointer', transition: 'box-shadow 0.3s' }}
                 onFocus={e => e.target.style.boxShadow = '0 0 15px rgba(212,168,67,0.15)'}
                 onBlur={e => e.target.style.boxShadow = 'none'}>
-                <option value="" style={{ background: '#1a1408' }}>
+                <option value="" style={{ background: 'var(--bg-input)' }}>
                   — Select prisoner to generate bail —
                 </option>
                 {undertrials.map(u => {
@@ -139,7 +139,7 @@ export default function BailGenerator() {
                   const s = d > 90 ? '🔴' : d > 60 ? '🟡' : '🟢';
                   return (
                     <option key={u.id} value={u.id}
-                      style={{ background: '#1a1408' }}>
+                      style={{ background: 'var(--bg-input)' }}>
                       {s} {u.name} · {d} days
                     </option>
                   );
@@ -207,12 +207,6 @@ export default function BailGenerator() {
                     <div style={{ height: '100%', borderRadius: 4,
                       width: 0, background: scoreColor,
                       animation: 'slideInLeft 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards' }}>
-                      <style>{`
-                        @keyframes slideInLeft {
-                          from { width: 0; }
-                          to { width: ${bailScore}%; }
-                        }
-                      `}</style>
                     </div>
                   </div>
                   <div style={{ fontSize: '0.75rem', color: scoreColor, fontWeight: 500 }}>

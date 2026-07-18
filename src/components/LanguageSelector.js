@@ -65,7 +65,7 @@ export default function LanguageSelector({ theme = 'green' }) {
       {open && (
         <div style={{
           position: 'absolute', top: '110%', right: 0,
-          background: '#0d1f1a', border: `1px solid ${color}33`,
+          background: 'var(--bg-card)', border: `1px solid ${color}33`,
           borderRadius: 10, padding: '6px 0',
           minWidth: 160, zIndex: 200,
           boxShadow: `0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px ${color}15`,
@@ -78,20 +78,20 @@ export default function LanguageSelector({ theme = 'green' }) {
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '8px 16px', cursor: 'pointer', fontSize: '0.8rem',
-                color: i18n.language === lang.code ? color : 'rgba(216,237,230,0.7)',
+                color: i18n.language === lang.code ? color : 'var(--text-muted)',
                 background: i18n.language === lang.code ? `${color}12` : 'transparent',
                 transition: 'all 0.15s',
               }}
               onMouseEnter={e => {
                 if (i18n.language !== lang.code) {
                   e.currentTarget.style.background = `${color}0a`;
-                  e.currentTarget.style.color = '#d8ede6';
+                  e.currentTarget.style.color = 'var(--text-primary)';
                 }
               }}
               onMouseLeave={e => {
                 if (i18n.language !== lang.code) {
                   e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = 'rgba(216,237,230,0.7)';
+                  e.currentTarget.style.color = 'var(--text-muted)';
                 }
               }}
             >

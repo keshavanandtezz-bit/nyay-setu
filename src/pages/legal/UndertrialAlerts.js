@@ -246,9 +246,9 @@ export default function UndertrialAlerts() {
                   outline: 'none', cursor: 'pointer',
                   transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
                 }}>
-                <option value="" style={{ background: '#1a1408' }}>All Districts</option>
+                <option value="" style={{ background: 'var(--bg-input)' }}>All Districts</option>
                 {DISTRICTS.map((d, i) => (
-                  <option key={i} value={d} style={{ background: '#1a1408' }}>{d}</option>
+                  <option key={i} value={d} style={{ background: 'var(--bg-input)' }}>{d}</option>
                 ))}
               </select>
 
@@ -261,10 +261,10 @@ export default function UndertrialAlerts() {
                   outline: 'none', cursor: 'pointer', marginLeft: 'auto',
                   transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
                 }}>
-                <option value="days_desc" style={{ background: '#1a1408' }}>Most Days First</option>
-                <option value="days_asc" style={{ background: '#1a1408' }}>Least Days First</option>
-                <option value="bail_desc" style={{ background: '#1a1408' }}>Highest Bail Score</option>
-                <option value="name" style={{ background: '#1a1408' }}>Name A–Z</option>
+                <option value="days_desc" style={{ background: 'var(--bg-input)' }}>Most Days First</option>
+                <option value="days_asc" style={{ background: 'var(--bg-input)' }}>Least Days First</option>
+                <option value="bail_desc" style={{ background: 'var(--bg-input)' }}>Highest Bail Score</option>
+                <option value="name" style={{ background: 'var(--bg-input)' }}>Name A–Z</option>
               </select>
 
               <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>

@@ -68,7 +68,9 @@ export default function CitizenHome() {
             {' '}{t('citizen.emergencyNumbers')}
           </span>
         </div>
-        <button style={{ fontSize: '0.75rem', padding: '5px 14px',
+        <button
+          onClick={() => window.location.href = 'tel:15100'}
+          style={{ fontSize: '0.75rem', padding: '5px 14px',
           background: 'rgba(162,29,29,0.15)', border: '1px solid rgba(162,29,29,0.3)',
           borderRadius: 6, color: '#f09595', cursor: 'pointer', transition: 'all 0.2s' }}
           onMouseEnter={e => e.currentTarget.style.background = 'rgba(162,29,29,0.25)'}
@@ -166,11 +168,11 @@ export default function CitizenHome() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.8rem' }}>
                   <button
-                    onClick={() => { if (smsPhone.length === 10) setSmsSent(true); }}
-                    disabled={smsPhone.length !== 10}
-                    style={{ flex: 1, padding: '0.8rem', background: smsPhone.length === 10 ? '#1d9e75' : 'rgba(29,158,117,0.3)',
+                    onClick={() => { if (smsPhone.length === 10 && /^[0-9]{10}$/.test(smsPhone)) setSmsSent(true); }}
+                    disabled={smsPhone.length !== 10 || !/^[0-9]{10}$/.test(smsPhone)}
+                    style={{ flex: 1, padding: '0.8rem', background: (smsPhone.length === 10 && /^[0-9]{10}$/.test(smsPhone)) ? '#1d9e75' : 'rgba(29,158,117,0.3)',
                       border: 'none', borderRadius: 8, color: '#fff', fontSize: '0.88rem',
-                      fontWeight: 600, cursor: smsPhone.length === 10 ? 'pointer' : 'not-allowed',
+                      fontWeight: 600, cursor: (smsPhone.length === 10 && /^[0-9]{10}$/.test(smsPhone)) ? 'pointer' : 'not-allowed',
                       fontFamily: "'Outfit',sans-serif", transition: 'all 0.2s' }}>
                     Pre-Register
                   </button>

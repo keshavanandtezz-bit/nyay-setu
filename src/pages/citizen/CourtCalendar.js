@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
 import PageWrapper from '../../components/PageWrapper';
+import { citizenAPI } from '../../services/api';
 import { prisoners } from '../../data/prisoners';
 
 const TEAL = '#1d9e75';
@@ -11,6 +12,8 @@ export default function CourtCalendar() {
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
   const [notFound, setNotFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchError, setSearchError] = useState('');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [searchFocused, setSearchFocused] = useState(false);
   const [hoveredTimeline, setHoveredTimeline] = useState(null);
@@ -22,15 +25,41 @@ export default function CourtCalendar() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  function handleSearch() {
-    const q = query.toLowerCase().trim();
-    const found = prisoners.find(p =>
-      p.case_number?.toLowerCase().includes(q) ||
-      p.prisoner_id?.toLowerCase().includes(q) ||
-      p.prisoner_name?.toLowerCase().includes(q)
+  async function handleSearch() {
+    const q = query.trim();
+    if (!q) return;
+    setIsLoading(true);
+    setSearchError('');
+    setResult(null);
+    setNotFound(false);
+
+    /* 1️⃣  Try backend API first */
+    try {
+      const data = await citizenAPI.getCalendar(q);
+      if (data && (data.found !== false)) {
+        setResult(data);
+        setIsLoading(false);
+        return;
+      }
+    } catch (_) {
+      /* API unreachable — fall through to local data */
+    }
+
+    /* 2️⃣  Fall back to local prisoners array */
+    const ql = q.toLowerCase();
+    const local = prisoners.find(p =>
+      p.case_number?.toLowerCase().includes(ql) ||
+      p.prisoner_id?.toLowerCase().includes(ql) ||
+      p.prisoner_name?.toLowerCase().includes(ql)
     );
-    if (found) { setResult(found); setNotFound(false); }
-    else { setResult(null); setNotFound(true); }
+
+    if (local) {
+      setResult(local);
+    } else {
+      setNotFound(true);
+      setSearchError('');
+    }
+    setIsLoading(false);
   }
 
   const formatDate = (d) => new Date(d).toLocaleDateString('en-IN',
@@ -100,15 +129,26 @@ export default function CourtCalendar() {
               padding: '0.9rem 1.2rem', fontSize: isMobile ? '0.82rem' : '0.9rem', color: 'var(--text-citizen)',
               fontFamily: "'Outfit',sans-serif" }}
           />
-          <button onClick={handleSearch}
-            style={{ padding: isMobile ? '0.9rem 1.2rem' : '0.9rem 2rem', background: TEAL, border: 'none',
+          <button
+            onClick={handleSearch}
+            disabled={isLoading}
+            aria-label={isLoading ? 'Searching…' : t('common.search')}
+            style={{
+              padding: isMobile ? '0.9rem 1.2rem' : '0.9rem 2rem',
+              background: isLoading ? '#16856200' : TEAL,
+              border: 'none',
               color: 'white', fontFamily: "'Outfit',sans-serif",
-              fontSize: '0.85rem', fontWeight: 500, cursor: 'pointer',
+              fontSize: '0.85rem', fontWeight: 500,
+              cursor: isLoading ? 'wait' : 'pointer',
               transition: 'background 0.2s ease',
+              opacity: isLoading ? 0.7 : 1,
+              minWidth: isMobile ? undefined : 120,
             }}
-            onMouseEnter={e => e.currentTarget.style.background = '#2ed89c'}
-            onMouseLeave={e => e.currentTarget.style.background = TEAL}
-          >{t('common.search')}</button>
+            onMouseEnter={e => { if (!isLoading) e.currentTarget.style.background = '#2ed89c'; }}
+            onMouseLeave={e => { if (!isLoading) e.currentTarget.style.background = TEAL; }}
+          >
+            {isLoading ? 'Searching…' : t('common.search')}
+          </button>
         </div>
         <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)',
           marginBottom: '1.5rem' }}>
@@ -123,7 +163,9 @@ export default function CourtCalendar() {
             <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📋</div>
             <div style={{ color: 'var(--text-citizen)', marginBottom: '0.4rem' }}>{t('common.noResults')}</div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Check the case number and try again, or contact your nearest court registry.
+              {searchError
+                ? searchError
+                : 'Check the case number and try again, or contact your nearest court registry.'}
             </div>
           </div>
         )}

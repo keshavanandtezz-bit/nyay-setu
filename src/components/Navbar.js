@@ -1,11 +1,18 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from './LanguageSelector';
 import ThemeToggle from './ThemeToggle';
 
 export default function Navbar({ theme = 'gold', showBack = false }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
+
+  function handleBack() {
+    if (location.pathname.startsWith('/legal')) navigate('/legal');
+    else if (location.pathname.startsWith('/citizen')) navigate('/citizen');
+    else navigate('/');
+  }
 
   const color = theme === 'green' ? '#1d9e75' : '#d4a843';
   const portalLabel = theme === 'green' ? t('common.citizenPortal') : 
@@ -15,7 +22,7 @@ export default function Navbar({ theme = 'gold', showBack = false }) {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '1rem 2.5rem',
+    padding: window.innerWidth < 480 ? '0.75rem 1rem' : '1rem 2.5rem',
     borderBottom: `1px solid ${color}22`,
     background: 'var(--bg-nav)',
     backdropFilter: 'blur(12px)',
@@ -30,7 +37,7 @@ export default function Navbar({ theme = 'gold', showBack = false }) {
   return (
     <nav style={navStyle}>
       <div
-        onClick={() => navigate('/')}
+        onClick={handleBack}
         style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', transition: 'transform 0.2s' }}
         onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
         onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
@@ -54,7 +61,7 @@ export default function Navbar({ theme = 'gold', showBack = false }) {
         <ThemeToggle />
 
         {showBack && (
-          <div onClick={() => navigate('/')}
+          <div onClick={handleBack}
             style={{ fontSize: '0.8rem', color: 'var(--text-muted)', cursor: 'pointer',
               padding: '6px 14px', borderRadius: 8, border: '1px solid var(--border-subtle)',
               background: 'var(--bg-card)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 6 }}

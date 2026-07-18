@@ -64,14 +64,14 @@ export default function Landing() {
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: '1.5rem', padding: '1rem 2rem', flexWrap: 'wrap',
-        borderBottom: '1px solid rgba(255,255,255,0.04)',
-        background: 'rgba(255,255,255,0.015)',
+        borderBottom: '1px solid var(--border-subtle)',
+        background: 'var(--bg-card)',
         position: 'relative', zIndex: 2 }}>
         {stats.map((s, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }} className="reveal-on-scroll">
             <div style={{ textAlign: 'center', minWidth: 80 }}>
               <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.4rem',
-                fontWeight: 600, color: '#d4a843', animation: 'countFade 1s ease-out forwards', animationDelay: `${i * 0.2}s` }}>
+                fontWeight: 600, color: 'var(--gold)', animation: 'countFade 1s ease-out forwards', animationDelay: `${i * 0.2}s` }}>
                 <CountUpNumber end={parseFloat(s.num)} suffix={s.suffix} />
               </div>
               <div style={{ fontSize: '0.65rem', letterSpacing: '1.5px',
@@ -99,7 +99,7 @@ export default function Landing() {
 
         <h1 className="reveal-on-scroll" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '3.8rem',
           fontWeight: 700, textAlign: 'center', lineHeight: 1.1, marginBottom: '0.8rem',
-          color: '#d4a843', background: 'linear-gradient(90deg, #d4a843, #f4db95, #d4a843)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundSize: '200% auto', animation: 'rotateGradient 5s linear infinite' }}>
+          color: 'var(--gold)', background: 'linear-gradient(90deg, #d4a843, #f4db95, #d4a843)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundSize: '200% auto', animation: 'rotateGradient 5s linear infinite' }}>
           {t('landing.headline')}
         </h1>
 
@@ -159,11 +159,11 @@ export default function Landing() {
         <div className="reveal-on-scroll stagger-children" style={{ fontSize: '0.75rem', color: 'var(--text-dim)',
           display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
           {['Built for India', 'Free to use', 'Powered by Groq AI', 'Data from NCRB · NJDG']
-            .map((t, i) => (
+            .map((tag, i) => (
             <span key={i} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               {i > 0 && <span style={{ width: 3, height: 3, borderRadius: '50%',
                 background: 'var(--text-dim)', display: 'inline-block' }} />}
-              {t}
+              {tag}
             </span>
           ))}
         </div>

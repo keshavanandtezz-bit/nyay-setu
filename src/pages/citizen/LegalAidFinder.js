@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
 import PageWrapper from '../../components/PageWrapper';
 import { legalAidData } from '../../data/legalAid';
+import { legalAPI } from '../../services/api';
 
 const TEAL = '#1d9e75';
 
@@ -11,13 +12,32 @@ export default function LegalAidFinder() {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [hoveredTag, setHoveredTag] = useState(null);
-  const result = legalAidData.find(d => d.district === selectedDistrict);
+  const [providers, setProviders] = useState(null);
+  const [loadingProviders, setLoadingProviders] = useState(false);
+
+  // Derive result: prefer API providers, fall back to local data
+  const result = providers ?? legalAidData.find(d => d.district === selectedDistrict);
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
+
+  useEffect(() => {
+    if (!selectedDistrict) { setProviders(null); return; }
+    setLoadingProviders(true);
+    legalAPI.getLegalAid(selectedDistrict)
+      .then(data => {
+        if (data && data.providers && data.providers.length > 0) {
+          setProviders(data.providers[0]); // API returns array; use first match
+        } else {
+          setProviders(null); // fall back to local
+        }
+      })
+      .catch(() => setProviders(null))
+      .finally(() => setLoadingProviders(false));
+  }, [selectedDistrict]);
 
   return (
     <PageWrapper style={{ minHeight: '100vh', background: 'var(--bg-citizen)', color: 'var(--text-citizen)' }}>
@@ -83,13 +103,19 @@ export default function LegalAidFinder() {
           >
             <option value="">— Choose a district —</option>
             {legalAidData.map((d, i) => (
-              <option key={i} value={d.district} style={{ background: '#0d2b24' }}>{d.district}</option>
+              <option key={i} value={d.district} style={{ background: 'var(--bg-input)' }}>{d.district}</option>
             ))}
           </select>
         </div>
 
         {/* ── Result Card ── */}
-        {result && (
+        {loadingProviders && (
+          <div style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+            ⏳ Loading providers…
+          </div>
+        )}
+
+        {!loadingProviders && result && (
           <div className="glass-card reveal-on-scroll" style={{
             background: 'rgba(29,158,117,0.04)',
             border: '1px solid rgba(29,158,117,0.18)', borderRadius: 14, overflow: 'hidden',
@@ -173,7 +199,7 @@ export default function LegalAidFinder() {
         {/* ── Eligibility Section ── */}
         <div className="reveal-on-scroll" style={{ marginTop: '1.5rem', padding: '1.2rem 1.8rem',
           background: 'var(--bg-card)',
-          border: 'var(--border-subtle)', borderRadius: 12 }}>
+          border: '1px solid var(--border-subtle)', borderRadius: 12 }}>
           <div style={{ fontSize: '0.82rem', fontWeight: 500, color: 'var(--text-citizen)',
             marginBottom: '0.8rem' }}>Who is eligible for free legal aid?</div>
           <div className="stagger-children" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
