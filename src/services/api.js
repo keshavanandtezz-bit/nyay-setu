@@ -5,15 +5,22 @@ const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 // ── Generic backend request ──────────────────────────────────────────
 async function request(path, options = {}) {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || `Request failed: ${res.status}`);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
+  try {
+    const res = await fetch(`${BASE_URL}${path}`, {
+      headers: { 'Content-Type': 'application/json', ...options.headers },
+      signal: controller.signal,
+      ...options,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || `Request failed: ${res.status}`);
+    }
+    return res.json();
+  } finally {
+    clearTimeout(timeout);
   }
-  return res.json();
 }
 
 // ── CITIZEN API ──────────────────────────────────────────────────────
@@ -41,6 +48,20 @@ export const legalAPI = {
   getUndertrial: (id) => request(`/legal/undertrial/${id}`),
   getDistricts: () => request('/legal/districts'),
   getStats: () => request('/legal/stats'),
+
+  // Legal Aid & Precedents
+  getLegalAid: (district = '') => {
+    const qs = district ? `?district=${encodeURIComponent(district)}` : '';
+    return request(`/legal/legal-aid${qs}`);
+  },
+
+  getPrecedents: (category = '', q = '') => {
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+    if (q) params.set('q', q);
+    const qs = params.toString();
+    return request(`/legal/precedents${qs ? '?' + qs : ''}`);
+  },
 };
 
 // ── AI API ───────────────────────────────────────────────────────────
@@ -145,18 +166,19 @@ export const caseAPI = {
     request('/case/analytics'),
 };
 
-// ── COURTS API (Phase 3) ────────────────────────────────────────────
+// ── COURTS API ──────────────────────────────────────────────────────
 export const courtsAPI = {
-  findCourts: (type = '', district = '') => {
+  // Backend route is GET /courts?district=&court_type=
+  findCourts: (court_type = '', district = '') => {
     const params = new URLSearchParams();
-    if (type) params.set('type', type);
+    if (court_type) params.set('court_type', court_type);
     if (district) params.set('district', district);
     const qs = params.toString();
-    return request(`/courts/find${qs ? '?' + qs : ''}`);
+    return request(`/courts${qs ? '?' + qs : ''}`);
   },
 
-  getCourt: (courtId) =>
-    request(`/courts/${encodeURIComponent(courtId)}`),
+  getDistricts: () => request('/courts/districts'),
+  getTypes: () => request('/courts/types'),
 };
 
 // ── AUTH API (Phase 3) ──────────────────────────────────────────────
