@@ -9,9 +9,15 @@ export default function Navbar({ theme = 'gold', showBack = false }) {
   const { t } = useTranslation();
 
   function handleBack() {
-    if (location.pathname.startsWith('/legal')) navigate('/legal');
-    else if (location.pathname.startsWith('/citizen')) navigate('/citizen');
-    else navigate('/');
+    if (location.pathname === '/legal' || location.pathname === '/citizen') {
+      navigate('/');
+    } else if (location.pathname.startsWith('/legal')) {
+      navigate('/legal');
+    } else if (location.pathname.startsWith('/citizen')) {
+      navigate('/citizen');
+    } else {
+      navigate('/');
+    }
   }
 
   const color = theme === 'green' ? '#1d9e75' : '#d4a843';
