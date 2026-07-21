@@ -6,7 +6,8 @@ const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 // ── Generic backend request ──────────────────────────────────────────
 async function request(path, options = {}) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
+  const timeoutMs = options.timeout || 60000; // Default 60s timeout for cold starts and AI
+  const timeout = setTimeout(() => controller.abort(), timeoutMs); 
   try {
     const res = await fetch(`${BASE_URL}${path}`, {
       headers: { 'Content-Type': 'application/json', ...options.headers },
