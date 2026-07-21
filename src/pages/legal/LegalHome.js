@@ -113,13 +113,13 @@ export default function LegalHome() {
   useEffect(() => {
     legalAPI.getStats()
       .then(data => {
-        const overdue = data.overdue ?? data.red ?? null;
+        const overdue = data.overdue_count ?? 0;
         setOverdueCount(overdue);
         setStatsData([
-          { num: data.active_undertrials ?? data.total ?? 0, rawStr: '—', label: t('legal.totalUndertrials'), change: data.undertrial_change || t('common.loading'), changeColor: '#e24b4a', numColor: GOLD },
-          { num: overdue ?? 0, rawStr: '—', label: t('legal.overdue'), change: 'Exceeding legal limit', changeColor: '#e24b4a', numColor: '#e24b4a' },
-          { num: data.cases_this_week ?? 0, rawStr: '—', label: t('legal.approaching'), change: data.cases_change || t('common.loading'), changeColor: '#1d9e75', numColor: '#1d9e75' },
-          { num: parseFloat(data.avg_ai_response || '0'), rawStr: '—', suffix: 's', label: t('legal.noLawyer'), change: 'Nyay Mitra 99% uptime', changeColor: '#1d9e75', numColor: GOLD },
+          { num: data.total_undertrials ?? 0, rawStr: '—', label: t('legal.totalUndertrials'), change: 'Updated just now', changeColor: '#e24b4a', numColor: GOLD },
+          { num: overdue, rawStr: '—', label: t('legal.overdue'), change: 'Exceeding legal limit', changeColor: '#e24b4a', numColor: '#e24b4a' },
+          { num: data.approaching_limit ?? 0, rawStr: '—', label: t('legal.approaching'), change: 'In next 30 days', changeColor: '#1d9e75', numColor: '#1d9e75' },
+          { num: data.no_lawyer_assigned ?? 0, rawStr: '—', label: t('legal.noLawyer'), change: 'Need representation', changeColor: '#1d9e75', numColor: GOLD },
         ]);
       })
       .catch(() => {
@@ -148,9 +148,9 @@ export default function LegalHome() {
 
   function getGreeting() {
     const hour = new Date().getHours();
-    if (hour < 12) return `${t('legal.greeting')}, ${t('legal.morning')}`;
-    if (hour < 17) return `${t('legal.greeting')}, ${t('legal.afternoon')}`;
-    return `${t('legal.greeting')}, ${t('legal.evening')}`;
+    if (hour < 12) return t('legal.greeting', { timeOfDay: t('legal.morning') });
+    if (hour < 17) return t('legal.greeting', { timeOfDay: t('legal.afternoon') });
+    return t('legal.greeting', { timeOfDay: t('legal.evening') });
   }
 
   return (
