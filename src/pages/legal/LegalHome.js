@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Navbar from '../../components/Navbar';
 import PageWrapper from '../../components/PageWrapper';
 import { legalAPI } from '../../services/api';
+import { undertrials, getDaysInCustody } from '../../data/undertrials';
 
 const GOLD = '#d4a843';
 
@@ -123,12 +124,21 @@ export default function LegalHome() {
         ]);
       })
       .catch(() => {
-        // On error, show neutral placeholders instead of fake data
+        // Fallback to local data if API is down
+        const total = undertrials.length;
+        const overdue = undertrials.filter(u => getDaysInCustody(u.arrest_date) > 90).length;
+        const approaching = undertrials.filter(u => {
+           const d = getDaysInCustody(u.arrest_date);
+           return d > 60 && d <= 90;
+        }).length;
+        const noLawyer = undertrials.filter(u => !u.has_lawyer).length;
+        
+        setOverdueCount(overdue);
         setStatsData([
-          { num: 0, rawStr: '—', label: t('legal.totalUndertrials'), change: t('common.loading'), changeColor: 'rgba(232,224,204,0.3)', numColor: GOLD },
-          { num: 0, rawStr: '—', label: t('legal.overdue'), change: t('common.loading'), changeColor: 'rgba(232,224,204,0.3)', numColor: '#e24b4a' },
-          { num: 0, rawStr: '—', label: t('legal.approaching'), change: t('common.loading'), changeColor: 'rgba(232,224,204,0.3)', numColor: '#1d9e75' },
-          { num: 0, rawStr: '—', suffix: 's', label: t('legal.noLawyer'), change: 'Nyay Mitra 99% uptime', changeColor: '#1d9e75', numColor: GOLD },
+          { num: total, rawStr: '—', label: t('legal.totalUndertrials'), change: 'Local Fallback Mode', changeColor: '#e24b4a', numColor: GOLD },
+          { num: overdue, rawStr: '—', label: t('legal.overdue'), change: 'Exceeding legal limit', changeColor: '#e24b4a', numColor: '#e24b4a' },
+          { num: approaching, rawStr: '—', label: t('legal.approaching'), change: 'In next 30 days', changeColor: '#1d9e75', numColor: '#1d9e75' },
+          { num: noLawyer, rawStr: '—', label: t('legal.noLawyer'), change: 'Need representation', changeColor: '#1d9e75', numColor: GOLD },
         ]);
       });
   }, [t]);

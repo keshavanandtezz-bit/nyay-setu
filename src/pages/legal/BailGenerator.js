@@ -64,7 +64,40 @@ export default function BailGenerator() {
         throw new Error('Generation failed. Please try again.');
       }
     } catch (err) {
-      setError(err.message || 'AI service is temporarily unavailable. Please try again in a moment.');
+      // Fallback: Generate local template if backend is dead
+      const mockBail = `IN THE COURT OF THE PRINCIPAL DISTRICT AND SESSIONS JUDGE AT ${selectedPrisoner.district.toUpperCase()}
+
+Bail Application No. _____ of ${new Date().getFullYear()}
+
+BETWEEN:
+${selectedPrisoner.name.toUpperCase()} ... APPLICANT/ACCUSED
+
+AND:
+STATE OF KARNATAKA ... COMPLAINANT/RESPONDENT
+
+APPLICATION UNDER SECTION 439 OF THE CODE OF CRIMINAL PROCEDURE, 1973
+
+The Applicant respectfully submits as under:
+
+1. That the Applicant, aged ${selectedPrisoner.age} years, is an innocent citizen and has been falsely implicated in the present case involving charges of ${selectedPrisoner.charges} (under IPC Sections: ${selectedPrisoner.ipc_sections}).
+
+2. That the Applicant was arrested on ${new Date(selectedPrisoner.arrest_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })} and has been languishing in custody for the past ${days} days without any substantive progress in the trial.
+
+3. That the Applicant has deep roots in society and is not a flight risk. The Applicant undertakes to abide by all conditions imposed by this Hon'ble Court.
+
+4. That prolonged incarceration without trial violates the fundamental right to life and liberty guaranteed under Article 21 of the Constitution of India.
+
+PRAYER
+
+Wherefore, it is most respectfully prayed that this Hon'ble Court may be pleased to enlarge the Applicant on bail in the interest of justice and equity.
+
+Place: ${selectedPrisoner.district}
+Date: ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+
+ADVOCATE FOR APPLICANT`;
+      
+      setApplication(mockBail);
+      setError('Note: AI server is offline. Generated standard legal fallback template.');
     }
     setGenerating(false);
   }
